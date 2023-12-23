@@ -1,10 +1,5 @@
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$URL,
-
-    [Parameter(Mandatory=$true)]
-    [string]$ApiKey
-)
+$URL = $ENV:APIURL
+$ApiKey = $ENV:APIKEY
 
 Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
 
