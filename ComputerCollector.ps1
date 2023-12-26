@@ -1,4 +1,5 @@
-﻿write-output "Alo mamae"
+﻿
+write-output "Alo mamae"
 $apiUrl
 $apiKey
 Write-Output "Alo papai"
