@@ -1,10 +1,12 @@
-﻿param (
-    [Parameter(Mandatory=$true)]
-    [string]$URL,
+﻿# param (
+#     [Parameter(Mandatory=$true)]
+#     [string]$URL,
 
-    [Parameter(Mandatory=$true)]
-    [string]$ApiKey
-)
+#     [Parameter(Mandatory=$true)]
+#     [string]$ApiKey
+# )
+
+$url
 
 # $URL = $ENV:APIURL
 # $ApiKey = $ENV:APIKEY
