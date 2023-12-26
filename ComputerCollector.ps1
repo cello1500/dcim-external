@@ -1,6 +1,7 @@
 ﻿"Alo mamae"
 $apiUrl
 $apiKey
+"Alo papai"
 
 # $URL = $ENV:APIURL
 # $ApiKey = $ENV:APIKEY
