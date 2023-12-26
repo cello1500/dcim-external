@@ -1,7 +1,7 @@
-﻿"Alo mamae"
+﻿write-output "Alo mamae"
 $apiUrl
 $apiKey
-"Alo papai"
+Write-Output "Alo papai"
 
 # $URL = $ENV:APIURL
 # $ApiKey = $ENV:APIKEY
