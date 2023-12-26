@@ -1,6 +1,6 @@
-﻿
-"Alo mamae"
-$url
+﻿"Alo mamae"
+$apiUrl
+$apiKey
 
 # $URL = $ENV:APIURL
 # $ApiKey = $ENV:APIKEY
@@ -317,7 +317,7 @@ if ($Output.Length -gt 23) {
 }
 
 # Define the REST API endpoint URL
-$apiUrl = $URL
+$apiUrl = $ApiURL
 
 # Convert $v to JSON
 $jsonData = ConvertTo-Json $v -Depth 4
