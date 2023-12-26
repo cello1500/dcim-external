@@ -6,6 +6,7 @@
 #     [string]$ApiKey
 # )
 
+"Alo mamae"
 $url
 
 # $URL = $ENV:APIURL
