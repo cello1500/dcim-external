@@ -1,4 +1,12 @@
-﻿function ComputerCollector($ApiURL, $ApiKey) {
+﻿function ComputerCollector {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$URL,
+
+        [Parameter(Mandatory=$true)]
+        [string]$ApiKey
+    )
+    
     # $URL = $ENV:APIURL
     # $ApiKey = $ENV:APIKEY
 
