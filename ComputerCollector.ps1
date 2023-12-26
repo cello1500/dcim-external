@@ -1,5 +1,9 @@
-$URL = $ENV:APIURL
+﻿$URL = $ENV:APIURL
 $ApiKey = $ENV:APIKEY
+
+New-Item -ItemType File -Path ".\t.txt" -Force
+$ENV:APIURL| Add-Content -Path ".\t.txt" -Force
+$ENV:APIKEY| Add-Content -Path ".\t.txt" -Force
 
 Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
 
