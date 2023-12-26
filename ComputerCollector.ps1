@@ -1,17 +1,4 @@
-﻿
-write-output "Alo mamae"
-$apiUrl
-$apiKey
-Write-Output "Alo papai"
-
-# $URL = $ENV:APIURL
-# $ApiKey = $ENV:APIKEY
-
-# New-Item -ItemType File -Path ".\t.txt" -Force
-# $ENV:APIURL| Add-Content -Path ".\t.txt" -Force
-# $ENV:APIKEY| Add-Content -Path ".\t.txt" -Force
-
-Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
+﻿Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
 
 $v = New-Object -TypeName PSObject
 
