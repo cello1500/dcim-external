@@ -1,11 +1,4 @@
-﻿# param (
-#     [Parameter(Mandatory=$true)]
-#     [string]$URL,
-
-#     [Parameter(Mandatory=$true)]
-#     [string]$ApiKey
-# )
-
+﻿
 "Alo mamae"
 $url
 
