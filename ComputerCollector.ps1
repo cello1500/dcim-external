@@ -287,6 +287,18 @@ If($QUserToRichObject){
 }
 $v = $v | Add-Member -Name "WindowsSessions" -Value $UserSessions -MemberType NoteProperty -PassThru
 
+# Collect Teamviewer information from registry
+$hklm = Get-ItemProperty -Path HKLM:\Software\Wow6432Node\TeamViewer -ErrorAction SilentlyContinue |
+    Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType, 
+        PatchManagementInstallationType, MonitoringV2Active, MonitoringServiceRegistered, PatchManagementActive, UpdateChannel
+if ($null -eq $hklm) {
+    $hklm = Get-ItemProperty -Path HKLM:\Software\TeamViewer -ErrorAction SilentlyContinue |
+        Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType, 
+            PatchManagementInstallationType, MonitoringV2Active, MonitoringServiceRegistered, PatchManagementActive, UpdateChannel
+}
+
+$v = $v | Add-Member -Name "TeamviewerRegistry" -Value $hklm -MemberType NoteProperty -PassThru
+
 Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
