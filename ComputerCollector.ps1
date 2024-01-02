@@ -332,6 +332,9 @@ $headers = @{
     "Content-Type" = "application/json"
 }
 
+# Next, allow the use of self-signed SSL certificates.
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
+
 # Send the REST API request
 $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
 
