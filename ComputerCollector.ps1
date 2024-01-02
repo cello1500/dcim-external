@@ -299,10 +299,10 @@ if ($null -eq $hklm) {
 
 $v = $v | Add-Member -Name "TeamviewerRegistry" -Value $hklm -MemberType NoteProperty -PassThru
 
-#Stop-Transcript
+Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
-#Remove-Item -Path $ENV:tmp\ComputerCollector.log
+Remove-Item -Path $ENV:tmp\ComputerCollector.log
 
 $Output = foreach ($line in $Output) {
     if (-not $line.contains("TerminatingError(New-Object):") -and -not $line.contains("Parameter name: sddlForm") -and -not $line.contains("CommandInvocation(Out-Null):")) {
@@ -337,7 +337,6 @@ $headers = @{
 
 # Send the REST API request
 $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
-Stop-Transcript
 
 # Display the response
 $response
