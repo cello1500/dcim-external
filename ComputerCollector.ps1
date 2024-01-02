@@ -299,7 +299,7 @@ if ($null -eq $hklm) {
 
 $v = $v | Add-Member -Name "TeamviewerRegistry" -Value $hklm -MemberType NoteProperty -PassThru
 
-Stop-Transcript
+#Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
 #Remove-Item -Path $ENV:tmp\ComputerCollector.log
@@ -337,6 +337,7 @@ $headers = @{
 
 # Send the REST API request
 $response = Invoke-RestMethod -Uri $apiUrl -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
+Stop-Transcript
 
 # Display the response
 $response
