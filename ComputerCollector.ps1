@@ -275,13 +275,24 @@ If($QUserToRichObject){
         # If the active session, remove the '>' character from Username value
         If($Record.USERNAME -Like ">*"){$Record.USERNAME = ($Record.USERNAME -Replace ">", "")}
 
-        $UserSessions += @{
-            Username        = [string]$Record.USERNAME
-            SessionName     = [string]$Record.SESSIONNAME
-            ID              = [string]$Record.ID
-            State           = [string]$Record.STATE
-            Idle            = [string]$Record.'IDLE TIME'
-            LogonTime       = [string]$Record.'LOGON TIME'
+        if ([string]$Record.'LOGON TIME' -ne "") {
+            $UserSessions += @{
+                Username        = [string]$Record.USERNAME
+                SessionName     = [string]$Record.SESSIONNAME
+                ID              = [string]$Record.ID
+                State           = [string]$Record.STATE
+                Idle            = [string]$Record.'IDLE TIME'
+                LogonTime       = [string]$Record.'LOGON TIME'
+            }
+        } else {
+            $UserSessions += @{
+                Username        = [string]$Record.USERNAME
+                SessionName     = ""
+                ID              = [string]$Record.SESSIONNAME
+                State           = [string]$Record.ID
+                Idle            = [string]$Record.STATE
+                LogonTime       = [string]$Record.'IDLE TIME'
+            }
         }
     }
 }
