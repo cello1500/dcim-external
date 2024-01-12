@@ -240,11 +240,24 @@ $v = $v | Add-Member -Name "Get-Package" -Value $i -MemberType NoteProperty -Pas
     Select-Object Status, Name, Caption, DeviceID, Default, Direct, DriverName, ExtendedPrinterStatus, Hidden, Local, Network, PortName, PrinterState
 $v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -PassThru
 
-# Get external IP address
+# Get misceleneous information
+# Check if Intune is installed
+$path = ('{0}\Microsoft Intune Management Extension' -f (${env:ProgramFiles(x86)}))
+$intuneInstalled = Test-Path -Path $path
+# Collect Azure AD Join information
+$status = (cmd /c dsregcmd /status)
+
 $i = New-Object -TypeName PSObject
 $i = $i | Add-Member -Name "ExternalIP" -Value (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -ErrorAction Continue) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "IntuneInstalled" -Value $intuneInstalled -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureAdJoined" -Value ($status -match "AzureAdJoined").Split(":")[-1] -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DomainJoined" -Value ($status -match "DomainJoined").Split(":")[-1] -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureDomainName" -Value ($status -match "DomainName") -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId") -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId") -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName") -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect logon information from Event Log
