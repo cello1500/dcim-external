@@ -147,6 +147,7 @@ ForEach-Object {
 $v = $v | Add-Member -Name "WmiMonitorID" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect user profile information. Focus on redirected folders
+# It skips profiles where users where deleted from main and the NT AUTHORITY and NT SERVICE profiles
 $i = Get-CIMInstance Win32_UserProfile |
         Select-Object -Property @{Name="Username";Expression={([System.Security.Principal.SecurityIdentifier]$_.sid).Translate( [System.Security.Principal.NTAccount])}},
         LocalPath, SID, LastUseTime, HealthStatus, Loaded, @{Name="Desktop";Expression={$_.desktop.redirected}},
@@ -157,7 +158,7 @@ $i = Get-CIMInstance Win32_UserProfile |
         @{Name="Videos";Expression={$_.Videos.redirected}}, @{Name="StartMenu";Expression={$_.StartMenu.redirected}},
         @{Name="Searches";Expression={$_.Searches.redirected}}, @{Name="SavedGames";Expression={$_.SavedGames.redirected}}
 $i | ForEach-Object {$_.Username = $_.Username.Value}
-$i = $i | Where-Object  {$_.Username.StartsWith("NT AUTHORITY") -eq $false -and $_.Username.StartsWith("NT SERVICE") -eq $false}
+$i = $i | Where-Object  {$_.UserName -ne $null -and $_.Username.StartsWith("NT AUTHORITY") -eq $false -and $_.Username.StartsWith("NT SERVICE") -eq $false}
 $v = $v | Add-Member -Name "Win32_UserProfile" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect OneDrive information
