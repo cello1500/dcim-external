@@ -333,7 +333,7 @@ if ($Output.Length -gt 23) {
 $apiUrl = $ApiURL
 
 # Convert $v to JSON
-$jsonData = ConvertTo-Json $v -Depth 4
+$jsonData = ConvertTo-Json $v -Depth 4 -Compress
 
 # Define the security key
 $securityKey = $ApiKey
