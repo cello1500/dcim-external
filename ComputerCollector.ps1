@@ -246,9 +246,10 @@ $path = ('{0}\Microsoft Intune Management Extension' -f (${env:ProgramFiles(x86)
 $intuneInstalled = Test-Path -Path $path
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
+$externalIP = (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3)
 
 $i = New-Object -TypeName PSObject
-$i = $i | Add-Member -Name "ExternalIP" -Value (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "ExternalIP" -Value $externalIP -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -ErrorAction Continue) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "IntuneInstalled" -Value $intuneInstalled -MemberType NoteProperty -PassThru
