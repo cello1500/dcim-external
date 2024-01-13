@@ -252,11 +252,11 @@ $i = $i | Add-Member -Name "ExternalIP" -Value (Invoke-RestMethod -Uri "https://
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -ErrorAction Continue) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "IntuneInstalled" -Value $intuneInstalled -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureAdJoined" -Value ($status -match "AzureAdJoined").Split(":")[-1] -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "DomainJoined" -Value ($status -match "DomainJoined").Split(":")[-1] -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId").Split(":")[-1] -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId").Split(":")[-1] -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName").Split(":")[-1] -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureAdJoined" -Value ($status -match "AzureAdJoined").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DomainJoined" -Value ($status -match "DomainJoined").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect logon information from Event Log
