@@ -241,12 +241,12 @@ $v = $v | Add-Member -Name "Get-Package" -Value $i -MemberType NoteProperty -Pas
 $v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -PassThru
 
 # Get misceleneous information
+$externalIP = (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3)
 # Check if Intune is installed
 $path = ('{0}\Microsoft Intune Management Extension' -f (${env:ProgramFiles(x86)}))
 $intuneInstalled = Test-Path -Path $path
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
-$externalIP = (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3)
 $AzureAdJoined = ($status -match "AzureAdJoined").Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
 $AzureAdJoined = ($status -match "DomainJoined").Split(":")[-1].Trim(); if ($DomainJoined -eq "YES") {$DomainJoined = $true} else {$DomainJoined = $false}
 
