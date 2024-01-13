@@ -247,14 +247,16 @@ $intuneInstalled = Test-Path -Path $path
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
 $externalIP = (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3)
+$AzureAdJoined = ($status -match "AzureAdJoined").Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
+$AzureAdJoined = ($status -match "DomainJoined").Split(":")[-1].Trim(); if ($DomainJoined -eq "YES") {$DomainJoined = $true} else {$DomainJoined = $false}
 
 $i = New-Object -TypeName PSObject
 $i = $i | Add-Member -Name "ExternalIP" -Value $externalIP -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -ErrorAction Continue) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "IntuneInstalled" -Value $intuneInstalled -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureAdJoined" -Value ($status -match "AzureAdJoined").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "DomainJoined" -Value ($status -match "DomainJoined").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureAdJoined" -Value $AzureAdJoined -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DomainJoined" -Value $DomainJoined -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
