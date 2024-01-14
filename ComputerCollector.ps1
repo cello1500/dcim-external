@@ -39,7 +39,7 @@ $i = Get-CimInstance -ClassName Win32_Processor |
     Select-Object Name, Caption, DeviceID, Description, Manufacturer, MaxClockSpeed, NumberOfCores, NumberOfLogicalProcessors, ProcessorId,
         ProcessorType, Revision, SocketDesignation, Status, ThreadCount, VirtualizationFirmwareEnabled, VirtualizationTechnologyEnabled,
         CurrentClockSpeed, L2CacheSize, L3CacheSize, L2CacheSpeed, L3CacheSpeed, LoadPercentage, PowerManagementSupported,
-        Architecture, Family, ProcessorSerialNumber, AssetTag, PartNumber, StstusInfo,
+        Architecture, Family, ProcessorSerialNumber, AssetTag, PartNumber, StatusInfo,
         AddressWidth, DataWidth, ExternalClock, Level, Version, NumberOfEnabledCore
 $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProperty -PassThru
 
