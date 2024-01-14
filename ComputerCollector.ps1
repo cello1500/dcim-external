@@ -28,7 +28,7 @@ $i = Get-CimInstance -Class Win32_OperatingSystem |
         RegisteredUser, WindowsDirectory, OperatingSystemSKU, OSProductSuite, OSLanguage, BootDevice, SystemDevice,
         SystemDirectory, SystemDrive, CountryCode, CurrentTimeZone,EncryptionLevel,
         FreePhysicalMemory, FreeSpaceInPagingFiles, FreeVirtualMemory, MaxNumberOfProcesses, MaxProcessMemorySize,NumberOfLicensedUsers,
-        NumberOfProcesses, NumberOfUsers, Organization, Primary, SizeStoredInPagingFiles, Status,
+        NumberOfProcesses, NumberOfUsers, Primary, SizeStoredInPagingFiles, Status,
         TotalSwapSpaceSize, TotalVirtualMemorySize, TotalVisibleMemorySize, SuiteMask, Description, SerialNumber
 $ubr = (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name UBR).UBR
 $i = $i | Add-Member -Name "Version2" -Value ($i.Version + "." + $ubr) -MemberType NoteProperty -PassThru
