@@ -35,9 +35,9 @@ $i = $i | Add-Member -Name "Version2" -Value ($i.Version + "." + $ubr) -MemberTy
 $v = $v | Add-Member -Name "Win32_OperatingSystem" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect CPU information
-$i = Get-CimInstance -ClassName Win32_Processor |
+$i = Get-CimInstance -ClassName Win32_Processor | Where-Object {$_.ProcessorType -eq 3} |
     Select-Object Name, Caption, DeviceID, Description, Manufacturer, MaxClockSpeed, NumberOfCores, NumberOfLogicalProcessors, ProcessorId,
-        ProcessorType, Revision, SocketDesignation, Status, ThreadCount, VirtualizationFirmwareEnabled, VirtualizationTechnologyEnabled,
+        ProcessorType, Revision, SocketDesignation, Status, ThreadCount, VirtualizationFirmwareEnabled,
         CurrentClockSpeed, L2CacheSize, L3CacheSize, L2CacheSpeed, L3CacheSpeed, LoadPercentage, PowerManagementSupported,
         Architecture, Family, ProcessorSerialNumber, AssetTag, PartNumber, StatusInfo,
         AddressWidth, DataWidth, ExternalClock, Level, Version, NumberOfEnabledCore
