@@ -40,7 +40,7 @@ $i = Get-CimInstance -ClassName Win32_Processor | Where-Object {$_.ProcessorType
         ProcessorType, Revision, SocketDesignation, Status, ThreadCount, VirtualizationFirmwareEnabled,
         CurrentClockSpeed, L2CacheSize, L3CacheSize, L2CacheSpeed, L3CacheSpeed, LoadPercentage, PowerManagementSupported,
         Architecture, Family, ProcessorSerialNumber, AssetTag, PartNumber, StatusInfo,
-        AddressWidth, DataWidth, ExternalClock, Level, Version, NumberOfEnabledCore
+        AddressWidth, DataWidth, Level, Version, NumberOfEnabledCore
 $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect physical disk information
