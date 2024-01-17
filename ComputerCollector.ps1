@@ -262,9 +262,9 @@ $i = $i | Add-Member -Name "DomainJoined" -Value $DomainJoined -MemberType NoteP
 $i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "DefaulGateway" -Value [array]$route.NextHop -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value [array]$route.InterfaceIndex -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value [array]$route.InterfaceAlias -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DefaulGateway" -Value @($route.NextHop) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value @($route.InterfaceIndex) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value @($route.InterfaceAlias) -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect logon information from Event Log
