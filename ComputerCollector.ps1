@@ -171,9 +171,9 @@ ForEach-Object {
     $Instance = $_.InstanceName
 #   $Sizes = Get-CimInstance -Namespace root\wmi -Class WmiMonitorBasicDisplayParams -ErrorAction SilentlyContinue | where-object { $_.instanceName -like $Instance }
     $connections = (Get-CimInstance WmiMonitorConnectionParams -Namespace root/wmi | where-object { $_.instanceName -like $Instance }).VideoOutputTechnology
-    ManufacturerVar   = if($_.ManufacturerName -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim(0x00); ""}
-    NameVar           = if($_.UserFriendlyName -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim(0x00); ""}
-    SerialVar         = if($_.SerialNumberID -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00); ""}
+    if($_.ManufacturerName -ne $null) { ManufacturerVar = [System.Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim(0x00)} else { ManufacturerVar = ""}
+    if($_.UserFriendlyName -ne $null) { NameVar = [System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim(0x00); ""} else { NameVar = ""}
+    if($_.SerialNumberID -ne $null) { SerialVar = [System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00); ""} else { SerialVar = ""}
 [pscustomobject]@{
         Manufacturer   = ManufacturerVar
         Name           = NameVar
