@@ -209,7 +209,8 @@ $AppsRegistry = $hklm32 + $hklm64 + $hkcu
 $v = $v | Add-Member -Name "AppsRegistry" -Value $AppsRegistry -MemberType NoteProperty -PassThru
 
 # Collect installed software information from Event Log
-[array]$i = Get-WinEvent -FilterHashtable @{LogName = "Application"; ProviderName = "MsiInstaller"; Id = 1033; } | Select-Object TimeCreated, Message, @{Name="UserID";Expression={[string]$_.UserID}},
+[array]$i = Get-WinEvent -FilterHashtable @{LogName = "Application"; ProviderName = "MsiInstaller"; Id = 1033; }  -ErrorAction SilentlyContinue | 
+                Select-Object TimeCreated, Message, @{Name="UserID";Expression={[string]$_.UserID}},
     @{Name="Username";Expression={[string]([System.Security.Principal.SecurityIdentifier]$_.userid).Translate( [System.Security.Principal.NTAccount])}}, RecordId
 $v = $v | Add-Member -Name "WinEventApps" -Value $i -MemberType NoteProperty -PassThru
 
