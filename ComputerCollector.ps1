@@ -144,29 +144,30 @@ $v = $v | Add-Member -Name "Win32_NetworkLoginProfile" -Value $i -MemberType Not
 #         @{Name="SerialNumberID";Expression={[System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00)}}, YearOfManufacture, WeekOfManufacture
 # $v = $v | Add-Member -Name "WmiMonitorID" -Value $i -MemberType NoteProperty -PassThru
 
-[array]$i = Get-ciminstance wmimonitorID -namespace root\wmi -ErrorAction SilentlyContinue |
+$adapterTypes = @{ #https://www.magnumdb.com/search?q=parent:D3DKMDT_VIDEO_OUTPUT_TECHNOLOGY
+    '-2'         = 'Unknown'
+    '-1'         = 'Unknown'
+    '0'          = 'VGA'
+    '1'          = 'S-Video'
+    '2'          = 'Composite'
+    '3'          = 'Component'
+    '4'          = 'DVI'
+    '5'          = 'HDMI'
+    '6'          = 'LVDS'
+    '8'          = 'D-Jpn'
+    '9'          = 'SDI'
+    '10'         = 'DisplayPort (external)'
+    '11'         = 'DisplayPort (internal)'
+    '12'         = 'Unified Display Interface'
+    '13'         = 'Unified Display Interface (embedded)'
+    '14'         = 'SDTV dongle'
+    '15'         = 'Miracast'
+    '16'         = 'Internal'
+    '2147483648' = 'Internal'
+}
+
+[array]$i = @(Get-ciminstance wmimonitorID -namespace root\wmi -ErrorAction SilentlyContinue) |
 ForEach-Object {
-    $adapterTypes = @{ #https://www.magnumdb.com/search?q=parent:D3DKMDT_VIDEO_OUTPUT_TECHNOLOGY
-        '-2'         = 'Unknown'
-        '-1'         = 'Unknown'
-        '0'          = 'VGA'
-        '1'          = 'S-Video'
-        '2'          = 'Composite'
-        '3'          = 'Component'
-        '4'          = 'DVI'
-        '5'          = 'HDMI'
-        '6'          = 'LVDS'
-        '8'          = 'D-Jpn'
-        '9'          = 'SDI'
-        '10'         = 'DisplayPort (external)'
-        '11'         = 'DisplayPort (internal)'
-        '12'         = 'Unified Display Interface'
-        '13'         = 'Unified Display Interface (embedded)'
-        '14'         = 'SDTV dongle'
-        '15'         = 'Miracast'
-        '16'         = 'Internal'
-        '2147483648' = 'Internal'
-    }
     $Instance = $_.InstanceName
 #   $Sizes = Get-CimInstance -Namespace root\wmi -Class WmiMonitorBasicDisplayParams -ErrorAction SilentlyContinue | where-object { $_.instanceName -like $Instance }
     $connections = (Get-CimInstance WmiMonitorConnectionParams -Namespace root/wmi | where-object { $_.instanceName -like $Instance }).VideoOutputTechnology
@@ -200,7 +201,7 @@ $v = $v | Add-Member -Name "Win32_UserProfile" -Value $i -MemberType NotePropert
     ForEach-Object {
         $aa=$_.PSPath -match "^.*?\\.*?\\(.*?)\\"
         if ($aa -and $Matches[1] -ne ".DEFAULT") {
-            $_ | Add-Member -Name "Username" -Value ([System.Security.Principal.SecurityIdentifier]$Matches[1]).Translate( [System.Security.Principal.NTAccount]) -MemberType NoteProperty -PassThru}} | 
+            $_ | Add-Member -Name "Username" -Value ([System.Security.Principal.SecurityIdentifier]$Matches[1]).Translate( [System.Security.Principal.NTAccount]) -MemberType NoteProperty -PassThru}} |
                 Select-Object * -ExcludeProperty PSParentPath, PSChildName, PSProvider
 $i | ForEach-Object {$_.Username = $_.Username.Value}
 $v = $v | Add-Member -Name "OneDrive" -Value $i -MemberType NoteProperty -PassThru
@@ -243,7 +244,7 @@ $AppsRegistry = $hklm32 + $hklm64 + $hkcu
 $v = $v | Add-Member -Name "AppsRegistry" -Value $AppsRegistry -MemberType NoteProperty -PassThru
 
 # Collect installed software information from Event Log
-[array]$i = Get-WinEvent -FilterHashtable @{LogName = "Application"; ProviderName = "MsiInstaller"; Id = 1033; }  -ErrorAction SilentlyContinue | 
+[array]$i = Get-WinEvent -FilterHashtable @{LogName = "Application"; ProviderName = "MsiInstaller"; Id = 1033; }  -ErrorAction SilentlyContinue |
                 Select-Object TimeCreated, Message, @{Name="UserID";Expression={[string]$_.UserID}},
     @{Name="Username";Expression={[string]([System.Security.Principal.SecurityIdentifier]$_.userid).Translate( [System.Security.Principal.NTAccount])}}, RecordId
 $v = $v | Add-Member -Name "WinEventApps" -Value $i -MemberType NoteProperty -PassThru
@@ -357,11 +358,11 @@ $v = $v | Add-Member -Name "WindowsSessions" -Value $UserSessions -MemberType No
 
 # Collect Teamviewer information from registry
 $hklm = Get-ItemProperty -Path HKLM:\Software\Wow6432Node\TeamViewer -ErrorAction SilentlyContinue |
-    Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType, 
+    Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType,
         PatchManagementInstallationType, MonitoringV2Active, MonitoringServiceRegistered, PatchManagementActive, UpdateChannel
 if ($null -eq $hklm) {
     $hklm = Get-ItemProperty -Path HKLM:\Software\TeamViewer -ErrorAction SilentlyContinue |
-        Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType, 
+        Select-Object IsHostModule, InstallationDirectory, Always_Online, Version, ClientID, LicenseType, LastUpdateCheck,UpdateVersion, MonitoringInstallationType,
             PatchManagementInstallationType, MonitoringV2Active, MonitoringServiceRegistered, PatchManagementActive, UpdateChannel
 }
 
@@ -403,7 +404,7 @@ $response
 
 # get-eventlog -ComputerName "localhost" -logname ’security’ -instanceid 4624 -after (get-date).adddays(-10) | % {
 #     [array] $login += [pscustomobject] @{
-    
+
 #         account = $_.replacementstrings[5]
 #         time = $_.timewritten
 #         type = $_.replacementstrings[8]
