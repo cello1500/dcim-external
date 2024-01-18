@@ -342,7 +342,6 @@ $Output = foreach ($line in $Output) {
     }
 }
 
-"Output length: " + $Output.Length
 $i = foreach ($line in $Output) { $line + "`n" }
 # Add the script errors
 if ($Output.Length -gt 23) {
