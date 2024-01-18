@@ -1,5 +1,39 @@
 ﻿Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
 
+# set rest api base url and entry points
+$ApiURL = "https://dcim-collector.wilmorite.com:8090/v1"
+$PostResultURL = $ApiURL + "/store-computer"
+$GetIpURL = $ApiURL + "/ip"
+
+# allow the use of self-signed SSL certificates on rest api requests
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
+
+if (-not ([System.Management.Automation.PSTypeName]"TrustEverything").Type) {
+    Add-Type -TypeDefinition  @"
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+public static class TrustEverything
+{
+private static bool ValidationCallback(object sender, X509Certificate certificate, X509Chain chain,
+    SslPolicyErrors sslPolicyErrors) { return true; }
+public static void SetCallback() { System.Net.ServicePointManager.ServerCertificateValidationCallback = ValidationCallback; }
+public static void UnsetCallback() { System.Net.ServicePointManager.ServerCertificateValidationCallback = null; }
+}
+"@
+}
+
+[TrustEverything]::SetCallback()
+
+# Define the security key for rest api calls
+$securityKey = $ApiKey
+
+# Create the headers with the security key
+$headers = @{
+    "X-WILMORITE-API-KEY" = "$securityKey"
+    "Content-Type" = "application/json"
+}
+
+
 $v = New-Object -TypeName PSObject
 
 # Collect computer information
@@ -242,7 +276,8 @@ $v = $v | Add-Member -Name "Get-Package" -Value $i -MemberType NoteProperty -Pas
 $v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -PassThru
 
 # Get misceleneous information
-$externalIP = (Invoke-RestMethod -Uri "https://api.ipify.org" -TimeoutSec 3)
+$externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
+
 # Check if Intune is installed
 $path = ('{0}\Microsoft Intune Management Extension' -f (${env:ProgramFiles(x86)}))
 $intuneInstalled = Test-Path -Path $path
@@ -355,20 +390,8 @@ $apiUrl = $ApiURL
 # Convert $v to JSON
 $jsonData = ConvertTo-Json $v -Depth 4 -Compress
 
-# Define the security key
-$securityKey = $ApiKey
-
-# Create the headers with the security key
-$headers = @{
-    "X-WILMORITE-API-KEY" = "$securityKey"
-    "Content-Type" = "application/json"
-}
-
-# Next, allow the use of self-signed SSL certificates.
-[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
-
 # Send the REST API request
-$response = Invoke-RestMethod -Uri $apiUrl -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
+$response = Invoke-RestMethod -Uri $PostResultURL -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
 
 # Display the response
 $response
