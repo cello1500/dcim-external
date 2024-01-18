@@ -171,10 +171,13 @@ ForEach-Object {
     $Instance = $_.InstanceName
 #   $Sizes = Get-CimInstance -Namespace root\wmi -Class WmiMonitorBasicDisplayParams -ErrorAction SilentlyContinue | where-object { $_.instanceName -like $Instance }
     $connections = (Get-CimInstance WmiMonitorConnectionParams -Namespace root/wmi | where-object { $_.instanceName -like $Instance }).VideoOutputTechnology
-    [pscustomobject]@{
-        Manufacturer   = [System.Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim(0x00)
-        Name           = [System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim(0x00)
-        Serial         = [System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00)
+    ManufacturerVar   = if($_.ManufacturerName -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim(0x00); ""}
+    NameVar           = if($_.UserFriendlyName -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim(0x00); ""}
+    SerialVar         = if($_.SerialNumberID -ne $null) { [System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00); ""}
+[pscustomobject]@{
+        Manufacturer   = ManufacturerVar
+        Name           = NameVar
+        Serial         = SerialVar
 #       Size           = ([System.Math]::Round(([System.Math]::Sqrt([System.Math]::Pow($Sizes.MaxHorizontalImageSize, 2) + [System.Math]::Pow($_.MaxVerticalImageSize, 2)) / 2.54), 0))
         ConnectionType = $adapterTypes."$connections"
     }
