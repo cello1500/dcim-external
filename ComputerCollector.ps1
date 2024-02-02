@@ -284,6 +284,9 @@ $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -T
 
 # Get Intune device ID
 $provider = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\DeviceHealthMonitoring" -name ConfigDeviceHealthMonitoringScope_WinningProvider -ErrorAction SilentlyContinue).ConfigDeviceHealthMonitoringScope_WinningProvider
+if ($null -eq $provider) {
+    $provider = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows Defender" -name MdmSubscriberIds -ErrorAction SilentlyContinue).MdmSubscriberIds
+}
 $intuneID = (Get-ItemProperty ("HKLM:\SOFTWARE\Microsoft\Enrollments\" + $provider + "\DMClient\MS DM Server") -name EntDMID -ErrorAction SilentlyContinue).EntDMID
 
 # Collect Azure AD Join information
