@@ -282,9 +282,9 @@ $v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -P
 # Get misceleneous information
 $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
 
-# Check if Intune is installed
-$path = ('{0}\Microsoft Intune Management Extension' -f (${env:ProgramFiles(x86)}))
-$intuneInstalled = Test-Path -Path $path
+# Get Intune device ID
+$intuneID = Get-ItemPropertyValue HKLM:\SOFTWARE\Microsoft\Provisioning\Diagnostics\Autopilot\EstablishedCorrelations -Name EntDMID -ErrorAction SilentlyContinue
+
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
 $AzureAdJoined = ($status -match "AzureAdJoined").Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
@@ -296,7 +296,7 @@ $i = New-Object -TypeName PSObject
 $i = $i | Add-Member -Name "ExternalIP" -Value $externalIP -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -ErrorAction Continue) -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "IntuneInstalled" -Value $intuneInstalled -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "IntuneDeviceID" -Value $intuneID -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureAdJoined" -Value $AzureAdJoined -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DomainJoined" -Value $DomainJoined -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId").Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
