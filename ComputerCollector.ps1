@@ -283,7 +283,8 @@ $v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -P
 $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
 
 # Get Intune device ID
-$intuneID = Get-ItemPropertyValue HKLM:\SOFTWARE\Microsoft\Provisioning\Diagnostics\Autopilot\EstablishedCorrelations -Name EntDMID -ErrorAction SilentlyContinue
+$provider = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\DeviceHealthMonitoring" -name ConfigDeviceHealthMonitoringScope_WinningProvider -ErrorAction SilentlyContinue).ConfigDeviceHealthMonitoringScope_WinningProvider
+$intuneID = (Get-ItemProperty ("HKLM:\SOFTWARE\Microsoft\Enrollments\" + $provider + "\DMClient\MS DM Server") -name EntDMID -ErrorAction SilentlyContinue).EntDMID
 
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
