@@ -174,12 +174,14 @@ ForEach-Object {
     if($_.ManufacturerName -ne $null) { $ManufacturerVar = [System.Text.Encoding]::ASCII.GetString($_.ManufacturerName).Trim(0x00)} else { $ManufacturerVar = ""}
     if($_.UserFriendlyName -ne $null) { $NameVar = [System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName).Trim(0x00) } else { $NameVar = ""}
     if($_.SerialNumberID -ne $null) { $SerialVar = [System.Text.Encoding]::ASCII.GetString($_.SerialNumberID).Trim(0x00) } else { $SerialVar = ""}
-[pscustomobject]@{
+    [pscustomobject]@{
         Manufacturer   = $ManufacturerVar
         Name           = $NameVar
         Serial         = $SerialVar
 #       Size           = ([System.Math]::Round(([System.Math]::Sqrt([System.Math]::Pow($Sizes.MaxHorizontalImageSize, 2) + [System.Math]::Pow($_.MaxVerticalImageSize, 2)) / 2.54), 0))
         ConnectionType = $adapterTypes."$connections"
+        YearOfManufacture = $_.YearOfManufacture
+        WeekOfManufacture = $_.WeekOfManufacture
     }
 }
 $v = $v | Add-Member -Name "WmiMonitorID" -Value $i -MemberType NoteProperty -PassThru
