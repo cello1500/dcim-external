@@ -2,8 +2,8 @@
 
 # set rest api base url and entry points
 $ApiURL = "https://dcim-collector.wilmorite.com:8090/v1"
-$PostResultURL = $ApiURL + "/store-computer"
-$GetIpURL = $ApiURL + "/ip"
+$PostResultURL = $ApiURL + "/computers"
+$GetIpURL = $ApiURL + "/externalip"
 
 # allow the use of self-signed SSL certificates on rest api requests
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
