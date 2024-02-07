@@ -346,36 +346,42 @@ If($QUserToRichObject){
         If($Record.USERNAME -Like ">*"){$Record.USERNAME = ($Record.USERNAME -Replace ">", "")}
 
         if ([string]$Record.'LOGON TIME' -ne "") {
-            $IdleTime = [string]$Record.'IDLE TIME'
-            If (($IdleTime -ne 'none') -and ($IdleTime -ne '.') -and ($Null -ne $IdleTime)) {
-                $IdleTime = $IdleTime.replace("+",":") -split ":"
-                if ($IdleTime.Length -eq 2) {
-                    $IdleTime = [int]$b[0]*60 + [int]$b[1]
-                } elseif ($IdleTime.Length -eq 3) {
-                    $IdleTime = [int]$b[0]*24*60 + [int]$b[1]*60 + [int]$b[2]
-                } elseif ($IdleTime.Length -eq 1) {
-                    $IdleTime = [int]$b[0]
-                }
+            $Username        = [string]$Record.USERNAME
+            $SessionName     = [string]$Record.SESSIONNAME
+            $ID              = [string]$Record.ID
+            $State           = [string]$Record.STATE
+            $Idle            = [string]$Record.'IDLE TIME'
+            $LogonTime       = [string]$Record.'LOGON TIME'
+        } else {
+            $Username        = [string]$Record.USERNAME
+            $SessionName     = ""
+            $ID              = [string]$Record.SESSIONNAME
+            $State           = [string]$Record.ID
+            $Idle            = [string]$Record.STATE
+            $LogonTime       = [string]$Record.'IDLE TIME'
+        }
+
+        $IdleTime = 0
+        If (($Idle -ne 'none') -and ($Idle -ne '.') -and ($Null -ne $Idle)) {
+            $IdleTime = $Idle.replace("+",":") -split ":"
+            if ($IdleTime.Length -eq 2) {
+                $IdleTime = [int]$IdleTime[0]*60 + [int]$IdleTime[1]
+            } elseif ($IdleTime.Length -eq 3) {
+                $IdleTime = [int]$IdleTime[0]*24*60 + [int]$IdleTime[1]*60 + [int]$IdleTime[2]
+            } elseif ($IdleTime.Length -eq 1) {
+                $IdleTime = [int]$IdleTime[0]
             } else {
                 $IdleTime = 0
             }
-            $UserSessions += @{
-                Username        = [string]$Record.USERNAME
-                SessionName     = [string]$Record.SESSIONNAME
-                ID              = [string]$Record.ID
-                State           = [string]$Record.STATE
-                Idle            = [int32]$IdleTime
-                LogonTime       = [string]$Record.'LOGON TIME'
-            }
-        } else {
-            $UserSessions += @{
-                Username        = [string]$Record.USERNAME
-                SessionName     = ""
-                ID              = [string]$Record.SESSIONNAME
-                State           = [string]$Record.ID
-                Idle            = [int32]$IdleTime
-                LogonTime       = [string]$Record.'IDLE TIME'
-            }
+        }
+
+        $UserSessions += @{
+            Username        = $Username
+            SessionName     = $SessionName
+            ID              = $ID
+            State           = $State
+            Idle            = $IdleTime
+            LogonTime       = $LongonTime
         }
     }
 }
