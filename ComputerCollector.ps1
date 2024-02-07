@@ -307,7 +307,7 @@ $DomainJoined = ($status -match "DomainJoined").Split(":")[-1].Trim(); if ($Doma
 # Collect routing information
 $route = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix "0.0.0.0/0"
 
-$LocalTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date)).TotalMilliseconds)
+$LocalTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date).ToUniversalTime()).TotalMilliseconds)
 
 $i = New-Object -TypeName PSObject
 $i = $i | Add-Member -Name "ExternalIP" -Value $externalIP -MemberType NoteProperty -PassThru
