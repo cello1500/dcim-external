@@ -276,6 +276,15 @@ $v = $v | Add-Member -Name "Get-AppxPackage" -Value $i -MemberType NoteProperty 
     }
 $v = $v | Add-Member -Name "Get-Package" -Value $i -MemberType NoteProperty -PassThru
 
+# Collect logon information from Event Log
+$UserProperty = @{n="User";e={[string](New-Object System.Security.Principal.SecurityIdentifier ($_.Properties[1].Value)).Translate([System.Security.Principal.NTAccount])}}
+$TypeProperty = @{n="Action";e={if($_.ID -eq 7001) {"Logon"} else {"Logoff"}}}
+$TimeProperty = @{n="Time";e={$_.TimeCreated}}
+[array]$i = Get-WinEvent -FilterHashtable @{LogName = "System"; Id = 7001, 7002; }  -ErrorAction SilentlyContinue | Select-Object $UserProperty, $TypeProperty, $TimeProperty, RecordId
+$i | ForEach-Object { $_.Time = $_.Time.ToString("yyyy-MM-dd HH:mm:ss") }
+
+$v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -PassThru
+
 # Collect printers information
 [array]$i = Get-CimInstance -ClassName Win32_Printer |
     Select-Object Status, Name, Caption, DeviceID, Default, Direct, DriverName, ExtendedPrinterStatus, Hidden, Local, Network, PortName, PrinterState
@@ -313,17 +322,8 @@ $i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName"
 $i = $i | Add-Member -Name "DefaulGateway" -Value @($route.NextHop) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value @($route.InterfaceIndex) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value @($route.InterfaceAlias) -MemberType NoteProperty -PassThru
-#$i = $i | Add-Member -Name "LocalTime" -Value $LocalTime -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "LocalTime" -Value $LocalTime -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
-
-# Collect logon information from Event Log
-$UserProperty = @{n="User";e={[string](New-Object System.Security.Principal.SecurityIdentifier ($_.Properties[1].Value)).Translate([System.Security.Principal.NTAccount])}}
-$TypeProperty = @{n="Action";e={if($_.ID -eq 7001) {"Logon"} else {"Logoff"}}}
-$TimeProperty = @{n="Time";e={$_.TimeCreated}}
-[array]$i = Get-WinEvent -FilterHashtable @{LogName = "System"; Id = 7001, 7002; }  -ErrorAction SilentlyContinue | Select-Object $UserProperty, $TypeProperty, $TimeProperty, RecordId
-$i | ForEach-Object { $_.Time = $_.Time.ToString("yyyy-MM-dd HH:mm:ss") }
-
-$v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -PassThru
 
 ## Collect system boot and shutdown information from Event Log
 $i = Get-WinEvent -FilterHashtable @{LogName = "System"; Id = 1074, 6005, 6006, 6008; } -ErrorAction SilentlyContinue |
