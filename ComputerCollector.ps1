@@ -298,6 +298,8 @@ $DomainJoined = ($status -match "DomainJoined").Split(":")[-1].Trim(); if ($Doma
 # Collect routing information
 $route = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix "0.0.0.0/0"
 
+$LocalTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date)).TotalMilliseconds)
+
 $i = New-Object -TypeName PSObject
 $i = $i | Add-Member -Name "ExternalIP" -Value $externalIP -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "TpmVersion" -Value  (Get-CimInstance -Namespace 'root\cimv2\security\microsofttpm' -Class win32_tpm -ErrorAction SilentlyContinue).PhysicalPresenceVersionInfo -MemberType NoteProperty -PassThru
@@ -311,7 +313,7 @@ $i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName"
 $i = $i | Add-Member -Name "DefaulGateway" -Value @($route.NextHop) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value @($route.InterfaceIndex) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value @($route.InterfaceAlias) -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "LocalTime" -Value ([math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date)).TotalMilliseconds)) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "LocalTime" -Value $LocalTime -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect logon information from Event Log
