@@ -387,7 +387,7 @@ If($QUserToRichObject){
         }
     }
 }
-$v = $v | Add-Member -Name "WindowsSessions" -Value $UserSessions -MemberType NoteProperty -PassThru
+$v = $v | Add-Member -Name "ComputerSessions" -Value $UserSessions -MemberType NoteProperty -PassThru
 
 # Collect Teamviewer information from registry
 $hklm = Get-ItemProperty -Path HKLM:\Software\Wow6432Node\TeamViewer -ErrorAction SilentlyContinue |
