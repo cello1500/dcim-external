@@ -345,13 +345,22 @@ If($QUserToRichObject){
         # If the active session, remove the '>' character from Username value
         If($Record.USERNAME -Like ">*"){$Record.USERNAME = ($Record.USERNAME -Replace ">", "")}
 
+        $IdleTime = 0
         if ([string]$Record.'LOGON TIME' -ne "") {
+            If (($IdleTime -ne 'none') -and ($IdleTime -ne '.') -and ($IdleTime -ne '$Null')) {
+                $IdleTime = ([string]$Record.'IDLE TIME').replace("+",":") -split ":"
+                if ($IdleTime.Length -eq 2) {
+                    $IdleTime = [int]$b[0]*60 + [int]$b[1]
+                } elseif ($IdleTime.Length -eq 3) {
+                    $IdleTime = [int]$b[0]*24*60 + [int]$b[0]*60 + [int]$b[1]
+                }
+            }
             $UserSessions += @{
                 Username        = [string]$Record.USERNAME
                 SessionName     = [string]$Record.SESSIONNAME
                 ID              = [string]$Record.ID
                 State           = [string]$Record.STATE
-                Idle            = [string]$Record.'IDLE TIME'
+                Idle            = $IdleTime
                 LogonTime       = [string]$Record.'LOGON TIME'
             }
         } else {
@@ -360,7 +369,7 @@ If($QUserToRichObject){
                 SessionName     = ""
                 ID              = [string]$Record.SESSIONNAME
                 State           = [string]$Record.ID
-                Idle            = [string]$Record.STATE
+                Idle            = $IdleTime
                 LogonTime       = [string]$Record.'IDLE TIME'
             }
         }
