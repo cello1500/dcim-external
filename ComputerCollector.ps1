@@ -311,7 +311,7 @@ $i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName"
 $i = $i | Add-Member -Name "DefaulGateway" -Value @($route.NextHop) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value @($route.InterfaceIndex) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value @($route.InterfaceAlias) -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "LocalTime" -Value [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date)).TotalMilliseconds) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "LocalTime" -Value ([math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End (Get-Date)).TotalMilliseconds)) -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect logon information from Event Log
