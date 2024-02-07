@@ -383,6 +383,7 @@ If($QUserToRichObject){
             ID              = $ID
             State           = $State
             Idle            = $IdleTime
+            Idle_Original   = $Idle
             LogonTime       = $LogonTime
         }
     }
