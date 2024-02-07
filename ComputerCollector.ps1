@@ -347,14 +347,14 @@ If($QUserToRichObject){
 
         if ([string]$Record.'LOGON TIME' -ne "") {
             $IdleTime = [string]$Record.'IDLE TIME'
-            If (($IdleTime -ne 'none') -and ($IdleTime -ne '.') -and ($IdleTime -ne '$Null')) {
+            If (($IdleTime -ne 'none') -and ($IdleTime -ne '.') -and ($Null -ne $IdleTime)) {
                 $IdleTime = $IdleTime.replace("+",":") -split ":"
                 if ($IdleTime.Length -eq 2) {
                     $IdleTime = [int]$b[0]*60 + [int]$b[1]
                 } elseif ($IdleTime.Length -eq 3) {
-                    $IdleTime = [int]$b[0]*24*60 + [int]$b[0]*60 + [int]$b[1]
-                } else {
-                    $IdleTime = 0
+                    $IdleTime = [int]$b[0]*24*60 + [int]$b[1]*60 + [int]$b[2]
+                } elseif ($IdleTime.Length -eq 1) {
+                    $IdleTime = [int]$b[0]
                 }
             } else {
                 $IdleTime = 0
