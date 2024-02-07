@@ -375,6 +375,8 @@ If($QUserToRichObject){
             }
         }
 
+        $LogonTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End ([datetime]$LogonTime).ToUniversalTime()).TotalMilliseconds)
+
         $UserSessions += @{
             Username        = $Username
             SessionName     = $SessionName
