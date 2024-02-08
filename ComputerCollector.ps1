@@ -367,7 +367,7 @@ If($QUserToRichObject){
             if ($IdleTime.Length -eq 2) {
                 $IdleTime = [int]$IdleTime[0]*60 + [int]$IdleTime[1]
             } elseif ($IdleTime.Length -eq 3) {
-                $IdleTime = [int]$IdleTime[0]*24*60*60 + [int]$IdleTime[1]*60*60 + [int]$IdleTime[2]*60
+                $IdleTime = [int]$IdleTime[0]*24*60 + [int]$IdleTime[1]*60 + [int]$IdleTime[2]
             } elseif ($IdleTime.Length -eq 1) {
                 $IdleTime = [int]$IdleTime[0]
             } else {
