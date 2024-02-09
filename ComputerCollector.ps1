@@ -217,6 +217,7 @@ $i | ForEach-Object {
     if($null -ne $_.ZipItEnabled) { $_.ZipItEnabled = [int64]$_.ZipItEnabled }
     if($null -ne $_.OpcEnabled) { $_.OpcEnabled = [int64]$_.OpcEnabled }
     if($null -ne $_.AIPIntegrationEnabled) { $_.AIPIntegrationEnabled = [int64]$_.AIPIntegrationEnabled}
+    if($null -ne $_.IsFolderScope) { $_.IsFolderScope = [int64]$_.IsFolderScope }
 }
 $v = $v | Add-Member -Name "OneDrive" -Value $i -MemberType NoteProperty -PassThru
 
