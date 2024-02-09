@@ -210,7 +210,7 @@ $v = $v | Add-Member -Name "Win32_UserProfile" -Value $i -MemberType NotePropert
                 Select-Object * -ExcludeProperty PSParentPath, PSChildName, PSProvider
 $i | ForEach-Object {
     $_.Username = $_.Username.Value
-    $_.LastModifiedTime_original = $_.LastModifiedTime
+    $_ | Add-Member -Name "LastModifiedTime_original" -Value $_.LastModifiedTime -MemberType NoteProperty -PassThru
     $_.LastModifiedTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End ([datetime]$_.LastModifiedTime).ToUniversalTime()).TotalSeconds)
 }
 $v = $v | Add-Member -Name "OneDrive" -Value $i -MemberType NoteProperty -PassThru
