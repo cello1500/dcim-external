@@ -212,11 +212,11 @@ $i | ForEach-Object {
     $_.Username = $_.Username.Value
     $_ | Add-Member -Name "LastModifiedTime_original" -Value $_.LastModifiedTime -MemberType NoteProperty -PassThru
     $_.LastModifiedTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End ([datetime]$_.LastModifiedTime).ToUniversalTime()).TotalMilliseconds)
-    $_.ZipItEnabled = [int64]$_.ZipItEnabled
-    $_.IsOfficeSyncIntegrationEnabled = [int64]$_.IsOfficeSyncIntegrationEnabled
-    $_.ZipItEnabled = [int64]$_.ZipItEnabled
-    $_.OpcEnabled = [int64]$_.OpcEnabled
-    $_.AIPIntegrationEnabled = [int64]$_.AIPIntegrationEnabled
+    if($null -ne $_.ZipItEnabled) { $_.ZipItEnabled = [int64]$_.ZipItEnabled }
+    if($null -ne $_.IsOfficeSyncIntegrationEnabled) { $_.IsOfficeSyncIntegrationEnabled = [int64]$_.IsOfficeSyncIntegrationEnabled }
+    if($null -ne $_.ZipItEnabled) { $_.ZipItEnabled = [int64]$_.ZipItEnabled }
+    if($null -ne $_.OpcEnabled) { $_.OpcEnabled = [int64]$_.OpcEnabled }
+    if($null -ne $_.AIPIntegrationEnabled) { $_.AIPIntegrationEnabled = [int64]$_.AIPIntegrationEnabled}
 }
 $v = $v | Add-Member -Name "OneDrive" -Value $i -MemberType NoteProperty -PassThru
 
