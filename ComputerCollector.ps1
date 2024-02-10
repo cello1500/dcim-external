@@ -296,9 +296,8 @@ $i | ForEach-Object { $_.Time = $_.Time.ToString("yyyy-MM-dd HH:mm:ss") }
 $v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect printers information
-[array]$i = Get-CimInstance -ClassName Win32_Printer |
-    Select-Object Status, Name, Caption, DeviceID, Default, Direct, DriverName, ExtendedPrinterStatus, Hidden, Local, Network, PortName, PrinterState
-$v = $v | Add-Member -Name "Win32_Printer" -Value $i -MemberType NoteProperty -PassThru
+[array]$i = get-printer | Select-Object PrinterStatus, Type, DeviceType, Description, Comment, Name, ComputerName, DriverName, Location, PortName, Shared, ShareName, PrintProcessor
+$v = $v | Add-Member -Name "Printer" -Value $i -MemberType NoteProperty -PassThru
 
 # Get misceleneous information
 $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
