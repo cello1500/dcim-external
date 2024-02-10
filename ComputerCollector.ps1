@@ -297,7 +297,8 @@ $i | ForEach-Object { $_.Time = $_.Time.ToString("yyyy-MM-dd HH:mm:ss") }
 $v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect printers information
-[array]$i = get-printer | Select-Object PrinterStatus, Type, DeviceType, Description, Comment, Name, ComputerName, DriverName, Location, PortName, Shared, ShareName, PrintProcessor
+[array]$i = get-printer | Select-Object PrinterStatus, Type, DeviceType, Description, Comment, Name, ComputerName, DriverName, Location, PortName, Shared, ShareName, PrintProcessor |
+                 ConvertTo-Csv -NoTypeInformation | ConvertFrom-Csv
 $v = $v | Add-Member -Name "Printer" -Value $i -MemberType NoteProperty -PassThru
 
 # Get misceleneous information
