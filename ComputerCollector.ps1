@@ -206,9 +206,10 @@ $v = $v | Add-Member -Name "Win32_UserProfile" -Value $i -MemberType NotePropert
     ForEach-Object {
         $aa=$_.PSPath -match "^.*?\\.*?\\(.*?)\\"
         if ($aa -and $Matches[1] -ne ".DEFAULT") {
-            $_ | Add-Member -Name "Username" -Value ([System.Security.Principal.SecurityIdentifier]$Matches[1]).Translate( [System.Security.Principal.NTAccount]) -MemberType NoteProperty -PassThru}} |
-                Select-Object * -ExcludeProperty PSParentPath, PSChildName, PSProvider
-$i | ForEach-Object {
+            $_ | Add-Member -Name "Username" -Value ([System.Security.Principal.SecurityIdentifier]$Matches[1]).Translate( [System.Security.Principal.NTAccount]) -MemberType NoteProperty -PassThru
+        }
+    } | Select-Object * -ExcludeProperty PSParentPath, PSChildName, PSProvider
+$i = $i | ForEach-Object {
     $_.Username = $_.Username.Value
     $_ | Add-Member -Name "LastModifiedTime_original" -Value $_.LastModifiedTime -MemberType NoteProperty -PassThru
     $_.LastModifiedTime = [math]::Round((New-TimeSpan -Start (Get-Date -Date "01/01/1970") -End ([datetime]$_.LastModifiedTime).ToUniversalTime()).TotalMilliseconds)
