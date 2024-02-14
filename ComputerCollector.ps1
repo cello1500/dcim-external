@@ -85,7 +85,7 @@ $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProper
 $v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk partition information
-[array]$i = Get-Partition AccessPaths, DiskId, DiskNumber, DriveLetter, GptType, Guid, IsActive, IsBoot, IsDAX, IsHidden, IsOffline, IsReadOnly, IsShadowCopy,
+[array]$i = Get-Partition | Select-Object AccessPaths, DiskId, DiskNumber, DriveLetter, GptType, Guid, IsActive, IsBoot, IsDAX, IsHidden, IsOffline, IsReadOnly, IsShadowCopy,
     IsSystem, MbrType, NoDefaultDriveLetter, ObjectId, Offset, PartitionNumber, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer,
     Size, TransitionState, UniqueId, DiskPath, OperationalStatus, Type
 $v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassThru
@@ -95,14 +95,16 @@ $v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassT
     PassThroughServer, Path, Size, SizeRemaining, UniqueId, DedupMode, DriveType, FileSystemType, HealthStatus, OperationalStatus
 [array]$e = Get-CimInstance -ClassName Win32_Volume
 
-$e | Foreach-Object	{ $wv = $_
+$e | Foreach-Object	{
+        $wv = $_
 		$found = $false
 		$i | Foreach-Object {
 				if ($_.UniqueId -eq $wv.DeviceID) {
 					$found = $true
 					$_ = $_ | Add-Member -Name "BootVolume" -Value $wv.BootVolume -MemberType NoteProperty -PassThru
 					$_ = $_ | Add-Member -Name "Compressed" -Value $wv.Compressed -MemberType NoteProperty -PassThru
-					$_ = $_ | Add-Member -Name "MaximumFileNameLength" -Value $wv.MaximumFileNameLength -MemberType NoteProperty -PassThru				}
+					$_ = $_ | Add-Member -Name "MaximumFileNameLength" -Value $wv.MaximumFileNameLength -MemberType NoteProperty -PassThru
+                }
 			}
 		if ($found -eq $false) {
 			$i += [pscustomobject]@{
