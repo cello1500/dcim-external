@@ -80,7 +80,7 @@ $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProper
 # Collect disk information
 [array]$i = Get-Disk | Select-Object AdapterSerialNumber, AllocatedSize, BootFromDisk, FirmwareVersion, FriendlyName, Guid, IsBoot, IsClustered,
     IsHighlyAvailable, IsOffline, IsReadOnly, IsScaleOut, IsSystem, LargestFreeExtent, Location, LogicalSectorSize, Manufacturer, Model, Number,
-    NumberOfPartitions, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer, Path, PhysicalSectorSize, PSComputerName,
+    NumberOfPartitions, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer, Path, PhysicalSectorSize,
     SerialNumber, Signature, Size, UniqueId
 $v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 
