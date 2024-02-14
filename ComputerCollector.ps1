@@ -79,7 +79,7 @@ $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProper
 
 # Collect disk information
 [array]$i = Get-Disk
-$v = $v | Add-Member -Name "Drive" -Value $i -MemberType NoteProperty -PassThru
+$v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk partition information
 [array]$i = Get-Partition
