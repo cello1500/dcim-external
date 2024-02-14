@@ -91,7 +91,7 @@ $v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk volume information
-[array]$i = Get-Volume AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
+[array]$i = Get-Volume | Select-Object AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
     PassThroughServer, Path, Size, SizeRemaining, UniqueId, DedupMode, DriveType, FileSystemType, HealthStatus, OperationalStatus
 [array]$e = Get-CimInstance -ClassName Win32_Volume
 
