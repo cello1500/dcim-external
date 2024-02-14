@@ -77,45 +77,44 @@ $i = Get-CimInstance -ClassName Win32_Processor | Where-Object {$_.ProcessorType
         AddressWidth, DataWidth, Level, Version, NumberOfEnabledCore
 $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProperty -PassThru
 
-# Collect physical disk information
-[array]$i = Get-CimInstance -ClassName Win32_DiskDrive | Select-Object DeviceID, Capition, Partitions, Name, Size, Model, Manufacturer, InterfaceType, FirmwareRevision
-$v = $v | Add-Member -Name "Win32_DiskDrive" -Value $i -MemberType NoteProperty -PassThru
+# Collect disk information
+[array]$i = Get-Disk
+$v = $v | Add-Member -Name "Drive" -Value $i -MemberType NoteProperty -PassThru
 
-# Collect logical disk information
-[array]$i = Get-CimInstance -ClassName Win32_LogicalDisk | Select-Object DeviceID, VolumeName, VolumeSerialNumber, Size, FreeSpace, DriveType, FileSystem, Compressed, Description, MediaType, VolumeDirty
-$v = $v | Add-Member -Name "Win32_LogicalDisk" -Value $i -MemberType NoteProperty -PassThru
+# Collect disk partition information
+[array]$i = Get-Partition
+$v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassThru
 
-# Retrieves the associations between logical disks and partitions on the computer
-[array]$i = Get-CimInstance -ClassName Win32_LogicalDiskToPartition | Select-Object Antecedent, Dependent
+# Collect disk volume information
+[array]$i = Get-Volume
+[array]$e = Get-CimInstance -ClassName Win32_Volume
 
-$a = @()
+$e | Foreach-Object	{ $wv = $_
+		$found = $false
+		$i | Foreach-Object {
+				if ($_.UniqueId -eq $wv.DeviceID) {
+					$found = $true
+					$_ = $_ | Add-Member -Name "BootVolume" -Value $wv.BootVolume -MemberType NoteProperty -PassThru
+					$_ = $_ | Add-Member -Name "Compressed" -Value $wv.Compressed -MemberType NoteProperty -PassThru
+					$_ = $_ | Add-Member -Name "MaximumFileNameLength" -Value $wv.MaximumFileNameLength -MemberType NoteProperty -PassThru				}
+			}
+		if ($found -eq $false) {
+			$i += [pscustomobject]@{
+					UniqueId = $wv.DeviceID
+					BootVolume   = $wv.BootVolume
+					Compressed            = $wv.Compressed
+					MaximumFileNameLength = $wv.MaximumFileNameLength
+					DriveLetter = $wv.DriveLetter
+					FileSystemLabel = $wv.Label
+					FileSystemType = $wv.FileSystem
+					Size = $wv.Capacity
+					SizeRemaining = $wv.FreeSpace
+					AllocationUnitSize = $wv.BlockSize
+				}
+		}
+	}
 
-foreach ($element in $i) {
-    $t = New-Object -TypeName PSObject
-    $t = $t | Add-Member -Name "Drive" -Value $element.Dependent.DeviceID -MemberType NoteProperty -PassThru
-    $t = $t | Add-Member -Name "Disk" -Value $element.Antecedent.DeviceID -MemberType NoteProperty -PassThru
-    $a += $t
-}
-$v = $v | Add-Member -Name "Win32_LogicalDiskToPartition" -Value $a -MemberType NoteProperty -PassThru
-
-# Retrieves the associations between physical disks and partitions on the computer
-[array]$i = Get-CimInstance -ClassName Win32_DiskDriveToDiskPartition | Select-Object Antecedent, Dependent
-
-$a = @()
-
-foreach ($element in $i) {
-    $t = New-Object -TypeName PSObject
-    $t = $t | Add-Member -Name "Disk" -Value $element.Dependent.DeviceID -MemberType NoteProperty -PassThru
-    $t = $t | Add-Member -Name "Device" -Value $element.Antecedent.DeviceID -MemberType NoteProperty -PassThru
-    $a += $t
-}
-$v = $v | Add-Member -Name "Win32_DiskDriveToDiskPartition" -Value $a -MemberType NoteProperty -PassThru
-
-# Retrieve information about volumes on the computer using the Win32_Volume class
-[array]$i = Get-CimInstance -ClassName Win32_Volume |
-    Select-Object DeviceID, DriveLetter, FileSystem, FreeSpace, Label, Name, Size, SystemVolume, VolumeDirty, VolumeName,
-        Description, Capacity, VolumeSerialNumber, DriveType, BootVolume
-$v = $v | Add-Member -Name "Win32_Volume" -Value $i -MemberType NoteProperty -PassThru
+$v = $v | Add-Member -Name "Volume" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect network adapter information
 [array]$j = Get-CimInstance -ClassName Win32_NetworkAdapter | Where-Object {$_.PhysicalAdapter -eq $true -or $_.NetEnabled -eq $true} |
