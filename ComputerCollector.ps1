@@ -78,15 +78,21 @@ $i = Get-CimInstance -ClassName Win32_Processor | Where-Object {$_.ProcessorType
 $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProperty -PassThru
 
 # Collect disk information
-[array]$i = Get-Disk
+[array]$i = Get-Disk | Select-Object AdapterSerialNumber, AllocatedSize, BootFromDisk, FirmwareVersion, FriendlyName, Guid, IsBoot, IsClustered,
+    IsHighlyAvailable, IsOffline, IsReadOnly, IsScaleOut, IsSystem, LargestFreeExtent, Location, LogicalSectorSize, Manufacturer, Model, Number,
+    NumberOfPartitions, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer, Path, PhysicalSectorSize, PSComputerName,
+    SerialNumber, Signature, Size, UniqueId
 $v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk partition information
-[array]$i = Get-Partition
+[array]$i = Get-Partition AccessPaths, DiskId, DiskNumber, DriveLetter, GptType, Guid, IsActive, IsBoot, IsDAX, IsHidden, IsOffline, IsReadOnly, IsShadowCopy,
+    IsSystem, MbrType, NoDefaultDriveLetter, ObjectId, Offset, PartitionNumber, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer,
+    Size, TransitionState, UniqueId, DiskPath, OperationalStatus, Type
 $v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk volume information
-[array]$i = Get-Volume
+[array]$i = Get-Volume AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
+    PassThroughServer, Path, Size, SizeRemaining, UniqueId, DedupMode, DriveType, FileSystemType, HealthStatus, OperationalStatus
 [array]$e = Get-CimInstance -ClassName Win32_Volume
 
 $e | Foreach-Object	{ $wv = $_
