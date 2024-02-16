@@ -85,30 +85,45 @@ $v = $v | Add-Member -Name "Win32_Processor" -Value $i[0] -MemberType NoteProper
 $v = $v | Add-Member -Name "Disk" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect disk partition information
-[array]$i = Get-Partition | Select-Object AccessPaths, DiskId, DiskNumber, DriveLetter, GptType, Guid, IsActive, IsBoot, IsDAX, IsHidden, IsOffline, IsReadOnly, IsShadowCopy,
+[array]$i = Get-Partition
+[array]$p = $i | Select-Object AccessPaths, DiskId, DiskNumber, DriveLetter, GptType, Guid, IsActive, IsBoot, IsDAX, IsHidden, IsOffline, IsReadOnly, IsShadowCopy,
     IsSystem, MbrType, NoDefaultDriveLetter, ObjectId, Offset, PartitionNumber, PassThroughClass, PassThroughIds, PassThroughNamespace, PassThroughServer,
     Size, TransitionState, UniqueId, DiskPath, OperationalStatus, Type
-$v = $v | Add-Member -Name "Partition" -Value $i -MemberType NoteProperty -PassThru
+$p | Foreach-Object {
+	$match = $_.AccessPaths | Select-String -Pattern "[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}"
+	$_ = $_ | Add-Member -Name "VolumeId" -Value $match.Matches.Value -MemberType NoteProperty -PassThru
+}
+$v = $v | Add-Member -Name "Partition" -Value $p -MemberType NoteProperty -PassThru
 
 # Collect disk volume information
-[array]$i = Get-Volume | Select-Object AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
+$b = @()
+
+[array]$i | Foreach-Object {
+    $ptt = $_
+	$b += Get-Volume -Partition $ptt | Select-Object AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
     PassThroughServer, Path, Size, SizeRemaining, UniqueId, DedupMode, DriveType, FileSystemType, HealthStatus, OperationalStatus
+}
+
+#[array]$i = Get-Volume | Select-Object AllocationUnitSize, DriveLetter, FileSystem, FileSystemLabel, ObjectId, PassThroughClass, PassThroughIds, PassThroughNamespace,
+#    PassThroughServer, Path, Size, SizeRemaining, UniqueId, DedupMode, DriveType, FileSystemType, HealthStatus, OperationalStatus
 [array]$e = Get-CimInstance -ClassName Win32_Volume
 
 $e | Foreach-Object	{
         $wv = $_
 		$found = $false
-		$i | Foreach-Object {
+		$b | Foreach-Object {
 				if ($_.UniqueId -eq $wv.DeviceID) {
 					$found = $true
 					$_ = $_ | Add-Member -Name "BootVolume" -Value $wv.BootVolume -MemberType NoteProperty -PassThru
 					$_ = $_ | Add-Member -Name "Compressed" -Value $wv.Compressed -MemberType NoteProperty -PassThru
 					$_ = $_ | Add-Member -Name "MaximumFileNameLength" -Value $wv.MaximumFileNameLength -MemberType NoteProperty -PassThru
+					$_.UniqueId = $_.UniqueId.Substring(11,36)
                 }
 			}
+			
 		if ($found -eq $false) {
-			$i += [pscustomobject]@{
-					UniqueId = $wv.DeviceID
+			$b += [pscustomobject]@{
+					UniqueId = $wv.DeviceID.Substring(11,36)
 					BootVolume   = $wv.BootVolume
 					Compressed            = $wv.Compressed
 					MaximumFileNameLength = $wv.MaximumFileNameLength
@@ -121,8 +136,8 @@ $e | Foreach-Object	{
 				}
 		}
 	}
-
-$v = $v | Add-Member -Name "Volume" -Value $i -MemberType NoteProperty -PassThru
+    
+$v = $v | Add-Member -Name "Volume" -Value $b -MemberType NoteProperty -PassThru
 
 # Collect network adapter information
 [array]$j = Get-CimInstance -ClassName Win32_NetworkAdapter | Where-Object {$_.PhysicalAdapter -eq $true -or $_.NetEnabled -eq $true} |
