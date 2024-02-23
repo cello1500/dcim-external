@@ -140,7 +140,7 @@ $e | Foreach-Object	{
 $v = $v | Add-Member -Name "Volume" -Value $b -MemberType NoteProperty -PassThru
 
 # Collect network adapter information
-[array]$j = Get-NetAdapter | Select-Object ifAlias, ifDesc, ifIndex, MacAddress, Status, Name, LinkSpeed, MediaType, PhysicalMediaType, DriverInformation, ifOperStatus, Ifname, DriverVersion, 
+[array]$j = Get-NetAdapter | Select-Object ifAlias, ifDesc, ifIndex, MacAddress, Status, Name, LinkSpeed, MediaType, PhysicalMediaType, DriverInformation, Ifname, DriverVersion, 
                 InstanceID, MtuSize, ActiveMaximumTransmissionUnit, FullDuplex, DeviceWakeUpEnable, DriverDate, DriverProvider, HardwareInterface, PromiscuousMode, Virtual, VlanID, WdmInterface,
                 ifOperStatus, AdminStatus, MediaConnectionState
 $j | ForEach-Object {
