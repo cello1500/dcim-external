@@ -147,6 +147,9 @@ $j | ForEach-Object {
     $a = $_
     $a.MacAddress = $_.MacAddress -replace '-', ':'
     $a.InstanceID = $_.InstanceID.Trim("{", "}")
+    $a.ifOperStatus = [string]$a.ifOperStatus
+    $a.AdminStatus = [string]$a.AdminStatus
+    $a.MediaConnectionState = [string]$a.MediaConnectionState
     if ($a.LinkSpeed -eq "0 bps") {
         $a.LinkSpeed = 0
     } else {
