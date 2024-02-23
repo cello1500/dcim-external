@@ -136,20 +136,33 @@ $e | Foreach-Object	{
 				}
 		}
 	}
-    
+
 $v = $v | Add-Member -Name "Volume" -Value $b -MemberType NoteProperty -PassThru
 
 # Collect network adapter information
-[array]$j = Get-CimInstance -ClassName Win32_NetworkAdapter | Where-Object {$_.PhysicalAdapter -eq $true -or $_.NetEnabled -eq $true} |
-    Select-Object caption, description, Availability, DeviceID, InterfaceIndex, MACAddress, Manufacturer, Name, NetConnectionID,
-        NetConnectionStatus, NetEnabled, PhysicalAdapter, ProductName, ServiceName, Speed, SystemName, AdapterType, AdapterTypeId
-$v = $v | Add-Member -Name "Win32_NetworkAdapter" -Value $j -MemberType NoteProperty -PassThru
+[array]$j = Get-NetAdapter | Select-Object ifAlias, ifDesc, ifIndex, MacAddress, Status, Name, LinkSpeed, MediaType, PhysicalMediaType, DriverInformation, ifOperStatus, Ifname, DriverVersion, 
+                InstanceID, MtuSize, ActiveMaximumTransmissionUnit, FullDuplex, DeviceWakeUpEnable, DriverDate, DriverProvider, HardwareInterface, PromiscuousMode, Virtual, VlanID, WdmInterface
+$j | ForEach-Object {
+    $a = $_
+    $a.MacAddress = $_.MacAddress -replace '-', ':'
+    $a.InstanceID = $_.InstanceID.Trim("{", "}")
+    if ($a.LinkSpeed -eq "0 bps") {
+        $a.LinkSpeed = 0
+    } else {
+        $a.LinkSpeed = (Get-CimInstance -ClassName Win32_NetworkAdapter | Where-Object {$a.IfIndex -eq $_.InterfaceIndex}).Speed
+    }
+}
+$v = $v | Add-Member -Name "NetAdapter" -Value $j -MemberType NoteProperty -PassThru
 
 # Collect network adapter configuration information
 [array]$i = Get-CimInstance -ClassName Win32_NetworkAdapterConfiguration |
-    Select-Object caption, description, dhcpenabled, dhcpserver, DHCPLeaseObtained, DHCPLeaseExpires, ipaddress, ipsubnet,
-        defaultipgateway, dnsdomain, DNSDomainSuffixSearchOrder, macaddress, DNSServerSearchOrder, interfaceindex, IPFilterSecurityEnabled
-$i = $i | Where-Object  {$j.interfaceindex -contains $_.interfaceindex}
+    Select-Object Caption, Description, DHCPEnabled, DHCPServer, DHCPLeaseObtained, DHCPLeaseExpires, IpAddress, IpSubnet,
+        DefaultIpGateway, DNSDomain, DNSDomainSuffixSearchOrder, DNSEnabledForWINSResolution, DomainDNSRegistrationEnabled, FullDNSRegistrationEnabled, MACAddress,
+        DNSServerSearchOrder, interfaceindex, IPFilterSecurityEnabled, SettingID, Index, IPEnabled, WINSEnableLMHostsLookup
+$i = $i | Where-Object  {$j.ifindex -contains $_.interfaceindex}
+$i | ForEach-Object {
+    $_.SettingID = $_.SettingID.Trim("{", "}")
+}
 $v = $v | Add-Member -Name "Win32_NetworkAdapterConfiguration" -Value $i -MemberType NoteProperty -PassThru
 
 # Collect network login profile information
