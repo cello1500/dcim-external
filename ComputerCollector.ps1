@@ -173,7 +173,7 @@ $v = $v | Add-Member -Name "Win32_NetworkAdapterConfiguration" -Value $i -Member
 [array]$i = Get-CimInstance -ClassName Win32_NetworkLoginProfile -ErrorAction SilentlyContinue |
     Select-Object AccountExpires, Caption, Description, FullName, HomeDirectory, HomeDirectoryDrive, InstallDate, LastLogoff,LastLogon,
     LogonServer, MaximumStorage, Name, NumberOfLogons, Comment, PasswordAge, PasswordExpires,Privileges, Profile, UserID, UserType
-$i = $i | Where-Object  {$_.Name.StartsWith("NT AUTHORITY") -eq $false -and $_.Name.StartsWith("NT SERVICE") -eq $false}
+$i = $i | Where-Object  {$_.Name.StartsWith("NT AUTHORITY") -eq $false -and $_.Name.StartsWith("NT SERVICE") -eq $false -and $_.Caption -ne ""}
 $v = $v | Add-Member -Name "Win32_NetworkLoginProfile" -Value $i -MemberType NoteProperty -PassThru
 
 # Get computer monitors' information
