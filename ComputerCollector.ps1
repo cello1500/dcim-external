@@ -33,7 +33,7 @@ $ComputerName = (Get-CimInstance -ClassName Win32_ComputerSystem).Name
 $headers = @{
     "X-WILMORITE-API-KEY" = "$securityKey"
     "X-WILMORITE-APP-NAME" = "ComputerCollector"
-    "X-WILMORITE-COMPUTER-NAME" = "$Computername"
+    "X-Wilmorite-Hostname" = "$Computername"
     "Content-Type" = "application/json"
 }
 
