@@ -2,8 +2,7 @@ Start-Transcript -Path $ENV:tmp\ComputerUserCollector.log -Force
 
 # set rest api base url and entry points
 $ApiURL = "https://dcim-collector.wilmorite.com:8090/v1"
-$PostResultURL = $ApiURL + "/computers"
-$GetIpURL = $ApiURL + "/externalip"
+$PostResultURL = $ApiURL + "/computers/users/collect"
 
 # allow the use of self-signed SSL certificates on rest api requests
 [System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
