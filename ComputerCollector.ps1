@@ -27,9 +27,13 @@ public static void UnsetCallback() { System.Net.ServicePointManager.ServerCertif
 # Define the security key for rest api calls
 $securityKey = $ApiKey
 
+$ComputerName = (Get-CimInstance -ClassName Win32_ComputerSystem).Name
+
 # Create the headers with the security key
 $headers = @{
     "X-WILMORITE-API-KEY" = "$securityKey"
+    "X-WILMORITE-APP-NAME" = "ComputerCollector"
+    "X-WILMORITE-COMPUTER-NAME" = "$Computername"
     "Content-Type" = "application/json"
 }
 
