@@ -24,6 +24,7 @@ public static void UnsetCallback() { System.Net.ServicePointManager.ServerCertif
 [TrustEverything]::SetCallback()
 
 # Define the security key for rest api calls
+$ApiKey = $args[0]
 $securityKey = $ApiKey
 
 $ComputerName = (Get-CimInstance -ClassName Win32_ComputerSystem).Name
