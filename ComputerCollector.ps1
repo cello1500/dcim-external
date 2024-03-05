@@ -458,7 +458,7 @@ $v = $v | Add-Member -Name "TeamviewerRegistry" -Value $hklm -MemberType NotePro
 
 # Collect Scheduled Tasks information
 $tasks = (schtasks.exe /query /V /FO CSV) | ConvertFrom-Csv | Where-Object { $_.TaskName -ne "TaskName" }
-$v = $v | Add-Member -Name "ScheduledTasks" -Value $tasks -MemberType NoteProperty -PassThru
+$v = $v | Add-Member -Name "TaskScheduler" -Value $tasks -MemberType NoteProperty -PassThru
 
 Stop-Transcript
 
