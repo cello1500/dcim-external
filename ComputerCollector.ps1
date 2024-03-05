@@ -456,6 +456,10 @@ if ($null -eq $hklm) {
 
 $v = $v | Add-Member -Name "TeamviewerRegistry" -Value $hklm -MemberType NoteProperty -PassThru
 
+# Collect Scheduled Tasks information
+$tasks = (schtasks.exe /query /V /FO CSV) | ConvertFrom-Csv | Where-Object { $_.TaskName -ne "TaskName" }
+$v = $v | Add-Member -Name "ScheduledTasks" -Value $tasks -MemberType NoteProperty -PassThru
+
 Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
