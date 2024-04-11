@@ -41,7 +41,11 @@ $v = New-Object -TypeName PSObject
 
 $v = $v | Add-Member -Name "ComputerName" -Value $ComputerName -MemberType NoteProperty -PassThru
 $v = $v | Add-Member -Name "SerialNumber" -Value (Get-CimInstance -ClassName Win32_BIOS).SerialNumber -MemberType NoteProperty -PassThru
-$v = $v | Add-Member -Name "UserName" -Value $(whoami /upn) -MemberType NoteProperty -PassThru
+$userName = (whoami /upn)
+if ($LASTEXITCODE -ne 0) {
+    $userName = (whoami)
+}
+$v = $v | Add-Member -Name "UserName" -Value $userName -MemberType NoteProperty -PassThru
 
 # Collect printers information
 [array]$i = get-printer | Select-Object PrinterStatus, Type, DeviceType, Description, Comment, Name, ComputerName, DriverName, Location, PortName, Shared, ShareName, PrintProcessor |
