@@ -58,7 +58,7 @@ $v = $v | Add-Member -Name "Printer" -Value $i -MemberType NoteProperty -PassThr
 Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerUserCollector.log
-#Remove-Item -Path $ENV:tmp\ComputerUserCollector.log
+Remove-Item -Path $ENV:tmp\ComputerUserCollector.log
 
 $Output = foreach ($line in $Output) {
     if (-not $line.contains("TerminatingError(New-Object):") -and -not $line.contains("Parameter name: sddlForm") -and -not $line.contains("CommandInvocation(Out-Null):")) {
