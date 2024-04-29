@@ -1,7 +1,3 @@
-"Install-MSTeams-Computer.ps1: $ApiKey`n"
-
-return 8
-
 $EXE = "Teamsbootstrapper.exe"
 $DownloadExeURL = "https://go.microsoft.com/fwlink/?linkid=2243204&clcid=0x409"
 
@@ -43,7 +39,7 @@ $registryItem = "TeamsInstalled"
 $registryItemProvisionedApp = "TeamsProvisionedApp"
 
 if ((Test-Path -Path $registryPath) -and ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -gt 0) {
-    return
+    return 10
 }
 
 Start-DownloadFile -URL $DownloadExeURL -Path $env:TEMP -Name $EXE
