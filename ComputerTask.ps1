@@ -5,7 +5,7 @@ function RunScript {
 
     Try {
         $script = Invoke-WebRequest -Uri $url -UseBasicParsing | Select-Object -ExpandProperty Content
-        $script = $script.Substring(1)
+        #$script = $script.Substring(1)
     
         "ComputeTask: $ApiKey`n"
         Invoke-Expression $script -ErrorAction Continue
