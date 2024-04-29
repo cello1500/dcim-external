@@ -7,7 +7,7 @@ function RunScript {
         $script = Invoke-WebRequest -Uri $url -UseBasicParsing | Select-Object -ExpandProperty Content
         $script = $script.Substring(1)
     
-        "ComputeTask: $ApiKey"
+        "ComputeTask: $ApiKey`n"
         Invoke-Expression $script -ErrorAction Continue
     } Catch {
         return 5
@@ -34,6 +34,6 @@ if ($env:COMPUTERNAME -ne "NOAD01") {
 
 $ret = RunScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
 
-"ComputerTask.ps1: Return code: $ret"
+"ComputerTask.ps1: Return code: $ret`n"
 
 Stop-Transcript
