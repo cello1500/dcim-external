@@ -18,10 +18,7 @@ if ($env:COMPUTERNAME -ne "NOAD01") {
     return 1
 }
 
-#Start-Transcript -Path $ENV:tmp\ComputerTask.log -Force
-Start-Transcript -Path c:\windows\temp\ComputerTask.log -Force
-
-"Entering ComputerTask.ps1"
+Start-Transcript -Path $ENV:tmp\ComputerTask.log -Force
 
 $ret = RunScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
 
