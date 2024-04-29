@@ -1,4 +1,4 @@
-"Install-MSTeams-Computer.ps1: $ApiKey"
+"Install-MSTeams-Computer.ps1: $ApiKey`n"
 
 return 8
 
