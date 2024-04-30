@@ -18,16 +18,17 @@ if ($env:COMPUTERNAME -ne "NOAD01") {
     return 1
 }
 
-Start-Transcript -Path $ENV:tmp\ComputerTask.log -Force
+Start-Transcript -Path $ENV:tmp\ComputeUserTask.log -Force
 
 ####################################################################################################
-# Install Microsoft Teams
+# Install Microsoft Teams for the current user
 ####################################################################################################
-$registryPath = "HKLM:\Software\Wilmorite\DCIM"
-$registryItem = "TeamsInstalled"
+$registryPathUser = "HKCU:\Software\Wilmorite\DCIM"
+$registryItemUser = "TeamsInstalled"
 
-if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -eq 0) {
-    $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
+# Check if Teams is already installed for the current user
+if (-not (Test-Path -Path $registryPathUser) -or ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, $null)) -eq 0) {
+    $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-User.ps1"
 }
 
 Stop-Transcript
