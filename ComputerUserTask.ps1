@@ -14,7 +14,7 @@ function RunWebScript {
     return $LASTEXITCODE
 }
 
-if ($env:COMPUTERNAME -ne "NOAD01" -or $env:COMPUTERNAME -ne "AUTO-J9NH624") {
+if ($env:COMPUTERNAME -ne "NOAD01" -and $env:COMPUTERNAME -ne "AUTO-J9NH624") {
     return 1
 }
 
