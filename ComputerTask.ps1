@@ -34,7 +34,7 @@ new-alias -Name sysget -Value "$systemcontext"
 ####################################################################################################
 # Install Microsoft Teams
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\dcim-teams.log -Force
+Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
 
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "TeamsInstalled"
@@ -48,7 +48,7 @@ Stop-Transcript
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\dcim-winget.log -Force
+Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"

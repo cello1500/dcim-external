@@ -26,7 +26,7 @@ if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11"))
 ####################################################################################################
 # Install Microsoft Teams for the current user
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\ComputeUserTask.log -Force
+Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
 
 $registryPathUser = "HKCU:\Software\Wilmorite\DCIM"
 $registryItemUser = "TeamsInstalled"
@@ -41,7 +41,7 @@ Stop-Transcript
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\dcim-winget.log -Force
+Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 
 $registryPath = "HKCU:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
