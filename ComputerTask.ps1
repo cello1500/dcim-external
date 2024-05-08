@@ -50,10 +50,15 @@ $registryItem = "WingetUpdate"
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
     sysget upgrade --all --accept-package-agreements --accept-source-agreements
 
-    if ($? -and (-not (Test-Path -Path $registryPath))) {
+    if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
     }
-    Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value ((get-date).AddDays(1)).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
+
+    if ($?) {
+            Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value ((get-date).AddDays(1)).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
+    } else {
+            Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value "00000000" -ErrorAction SilentlyContinue | Out-Null
+    }
 }
 
 Stop-Transcript
