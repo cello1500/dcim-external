@@ -18,6 +18,10 @@ if ($env:COMPUTERNAME -ne "NOAD01" -and $env:COMPUTERNAME -ne "AUTO-J9NH624") {
     return 1
 }
 
+if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11")) {
+    return 1
+}
+
 $ret = 0
 
 $wingetexe = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_*_x64__8wekyb3d8bbwe\winget.exe"
