@@ -18,11 +18,11 @@ if ($env:COMPUTERNAME -ne "NOAD01" -and $env:COMPUTERNAME -ne "AUTO-J9NH624") {
     return 1
 }
 
-Start-Transcript -Path $ENV:tmp\ComputeUserTask.log -Force
-
 ####################################################################################################
 # Install Microsoft Teams for the current user
 ####################################################################################################
+Start-Transcript -Path $ENV:tmp\ComputeUserTask.log -Force
+
 $registryPathUser = "HKCU:\Software\Wilmorite\DCIM"
 $registryItemUser = "TeamsInstalled"
 
