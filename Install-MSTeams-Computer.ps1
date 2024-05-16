@@ -1,39 +1,3 @@
-$EXE = "Teamsbootstrapper.exe"
-$DownloadExeURL = "https://go.microsoft.com/fwlink/?linkid=2243204&clcid=0x409"
-
-function Start-DownloadFile {
-    param(
-        [parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$URL,
-
-        [parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$Path,
-
-        [parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$Name
-    )
-    Begin {
-        # Construct WebClient object
-        $WebClient = New-Object -TypeName System.Net.WebClient
-    }
-    Process {
-        # Create path if it doesn't exist
-        if (-not(Test-Path -Path $Path)) {
-            New-Item -Path $Path -ItemType Directory -Force | Out-Null
-        }
-
-        # Start download of file
-        $WebClient.DownloadFile($URL, (Join-Path -Path $Path -ChildPath $Name))
-    }
-    End {
-        # Dispose of the WebClient object
-        $WebClient.Dispose()
-    }
-}
-
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "TeamsInstalled"
 $registryItemProvisionedApp = "TeamsProvisionedApp"
@@ -41,8 +5,6 @@ $registryItemProvisionedApp = "TeamsProvisionedApp"
 if ((Test-Path -Path $registryPath) -and ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -gt 0) {
     return 10
 }
-
-Start-DownloadFile -URL $DownloadExeURL -Path $env:TEMP -Name $EXE
 
 $Appx = Get-AppxPackage -AllUsers | Where-Object {$PSItem. Name -eq "MSTeams"}
 $ProvApp = Get-ProvisionedAppPackage -Online | Where-Object {$PSItem. DisplayName -eq "MSTeams"}
@@ -58,15 +20,14 @@ if ($Appx -OR $ProvApp) {
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
     }
-    Set-ItemProperty -Path $registryPath -Name $registryItem -Type Dword -Value 0 -ErrorAction SilentlyContinue | Out-Null
-    $Result = & "$env:TEMP\$EXE" -x
 }
 
-$Result = & "$env:TEMP\$EXE" -p
-$ResultPSO = try { $Result | ConvertFrom-Json } catch {$null}
+Set-ItemProperty -Path $registryPath -Name $registryItem -Type Dword -Value 0 -ErrorAction SilentlyContinue | Out-Null
+
+sysget install Microsoft.Teams --accept-package-agreements --accept-source-agreements --scope machine
 
 # Check if the installation was successful
-if ($null -ne $ResultPSO -and $ResultPSO.success -eq $true) {
+if ($?) {
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
     }
@@ -78,5 +39,3 @@ if ($null -ne $ResultPSO -and $ResultPSO.success -eq $true) {
         Set-ItemProperty -Path $registryPath -Name $registryItemProvisionedApp -Type String -Value $ProvApp.PackageName -ErrorAction SilentlyContinue | Out-Null
     }
 }
-
-Remove-Item -Path "$env:TEMP\$EXE" -Force -ErrorAction SilentlyContinue

@@ -32,20 +32,6 @@ $wingetexe = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInst
 new-alias -Name sysget -Value "$systemcontext"
 
 ####################################################################################################
-# Install Microsoft Teams
-####################################################################################################
-Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
-
-$registryPath = "HKLM:\Software\Wilmorite\DCIM"
-$registryItem = "TeamsInstalled"
-
-if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -eq 0) {
-    $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
-}
-
-Stop-Transcript
-
-####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
 Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
@@ -66,6 +52,20 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
             Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value "00000000" -ErrorAction SilentlyContinue | Out-Null
             $ret = 15
     }
+}
+
+Stop-Transcript
+
+####################################################################################################
+# Install Microsoft Teams
+####################################################################################################
+Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
+
+$registryPath = "HKLM:\Software\Wilmorite\DCIM"
+$registryItem = "TeamsInstalled"
+
+if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -eq 0) {
+    $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
 }
 
 Stop-Transcript
