@@ -24,6 +24,13 @@ if ($Appx -OR $ProvApp) {
 
 Set-ItemProperty -Path $registryPath -Name $registryItem -Type Dword -Value 0 -ErrorAction SilentlyContinue | Out-Null
 
+$wingetexe = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_*_x64__8wekyb3d8bbwe\winget.exe"
+    if ($wingetexe){
+           $SystemContext = $wingetexe[-1].Path
+    }
+#create the sysget alias so winget can be ran as system
+new-alias -Name sysget -Value "$systemcontext"
+
 sysget install Microsoft.Teams --accept-package-agreements --accept-source-agreements --scope machine
 
 # Check if the installation was successful
