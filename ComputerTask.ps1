@@ -34,13 +34,13 @@ new-alias -Name sysget -Value "$systemcontext"
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
-#Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
+Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
-    sysget upgrade --all --accept-package-agreements --accept-source-agreements --scope machine --log $ENV:tmp\DCIM-Winget.log
+    sysget upgrade --all --accept-package-agreements --accept-source-agreements --scope machine --log $ENV:tmp\DCIM-Winget-Winget.log
 
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
@@ -54,7 +54,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     }
 }
 
-#Stop-Transcript
+Stop-Transcript
 
 ####################################################################################################
 # Install Microsoft Teams
