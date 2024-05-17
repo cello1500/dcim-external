@@ -40,7 +40,7 @@ $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
-    sysget upgrade --all --accept-package-agreements --accept-source-agreements
+    sysget upgrade --all --accept-package-agreements --accept-source-agreements --scope machine
 
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
