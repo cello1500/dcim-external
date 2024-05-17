@@ -48,6 +48,9 @@ Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 $registryPath = "HKCU:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
+((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000"))
+((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')
+
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
     $out = winget upgrade --all --scope user --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
