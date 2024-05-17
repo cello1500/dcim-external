@@ -41,7 +41,7 @@ $registryItem = "WingetUpdate"
 
 "This is Winget"
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
-    $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements --scope machine --log $ENV:tmp\DCIM-Winget-Winget.log
+    $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
     if (-not (Test-Path -Path $registryPath)) {

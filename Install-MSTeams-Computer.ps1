@@ -31,7 +31,7 @@ $wingetexe = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInst
 #create the sysget alias so winget can be ran as system
 new-alias -Name sysget -Value "$systemcontext"
 
-$out = sysget install Microsoft.Teams --accept-package-agreements --accept-source-agreements --scope machine --log $ENV:tmp\DCIM-Teams-Winget.log
+$out = sysget install Microsoft.Teams --accept-package-agreements --accept-source-agreements --scope machine
 "Winget Teams install output: $out"
 
 # Check if the installation was successful
