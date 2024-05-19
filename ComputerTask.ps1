@@ -67,7 +67,7 @@ $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "TeamsInstalled"
 
 "This is Teams"
-if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, $null)) -eq 0) {
+if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, 0)) -eq 0) {
     $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
 }
 
