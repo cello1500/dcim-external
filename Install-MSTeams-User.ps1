@@ -6,13 +6,13 @@ $registryItemProvisionedApp = "TeamsProvisionedApp"
 
 # Check if Teams is already installed on the machine
 if (-not (Test-Path -Path $registryPathMachine) -or 
-    ((Get-Item -LiteralPath $registryPathMachine).GetValue($registryItemMachine, $null)) -eq 0 -or
+    ((Get-Item -LiteralPath $registryPathMachine).GetValue($registryItemMachine, 0)) -eq 0 -or
     ($null -eq (Get-Item -LiteralPath $registryPathMachine).GetValue($registryItemProvisionedApp, $null))) {
     return
 }
 
 # Check if Teams is already installed for the current user
-if ((Test-Path -Path $registryPathUser) -and ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, $null)) -gt 0) {
+if ((Test-Path -Path $registryPathUser) -and ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, 0)) -gt 0) {
     return
 }
 
