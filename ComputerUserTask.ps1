@@ -32,7 +32,7 @@ $registryPathUser = "HKCU:\Software\Wilmorite\DCIM"
 $registryItemUser = "TeamsInstalled"
 
 # Check if Teams is already installed for the current user
-if (-not (Test-Path -Path $registryPathUser) -or ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, $null)) -eq 0) {
+if (-not (Test-Path -Path $registryPathUser) -or ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, 0)) -eq 0) {
     $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-User.ps1"
 }
 
