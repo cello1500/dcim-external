@@ -15,9 +15,6 @@ function RunWebScript {
 }
 
 $ret = 0
-if ($env:COMPUTERNAME -ne "NOAD01" -and $env:COMPUTERNAME -ne "AUTO-J9NH624") {
-    return 1
-}
 
 if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11")) {
     return 1
