@@ -45,7 +45,7 @@ Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 $registryPath = "HKCU:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
-if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
+if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -lt (Get-Date).ToString('yyyyMMdd')) {
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
     }
@@ -55,7 +55,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     "Winget upgrade output: $out"
 
     if ($?) {
-        Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value ((get-date).AddDays(1)).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
+        Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value (get-date).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
     } else {
         $ret = 15
     }

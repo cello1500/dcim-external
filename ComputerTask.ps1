@@ -36,7 +36,7 @@ $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
 "This is Winget"
-if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -le (Get-Date).ToString('yyyyMMdd')) {
+if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -lt (Get-Date).ToString('yyyyMMdd')) {
     $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
@@ -45,7 +45,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     }
 
     if ($?) {
-            Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value ((get-date).AddDays(1)).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
+            Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value (get-date).ToString('yyyyMMdd') -ErrorAction SilentlyContinue | Out-Null
     } else {
             Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value "00000000" -ErrorAction SilentlyContinue | Out-Null
             $ret = 15
