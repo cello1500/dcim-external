@@ -30,13 +30,12 @@ new-alias -Name sysget -Value "$systemcontext"
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
-
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
-"This is Winget"
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -lt (Get-Date).ToString('yyyyMMdd')) {
+    Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
+
     $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
@@ -50,23 +49,20 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
             Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value "00000000" -ErrorAction SilentlyContinue | Out-Null
             $ret = 15
     }
-}
 
-Stop-Transcript
+    Stop-Transcript
+}
 
 ####################################################################################################
 # Install Microsoft Teams
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
-
 $registryPath = "HKLM:\Software\Wilmorite\DCIM"
 $registryItem = "TeamsInstalled"
 
-"This is Teams"
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, 0)) -eq 0) {
+    Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
     $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-Computer.ps1"
+    Stop-Transcript
 }
-
-Stop-Transcript
 
 return $ret

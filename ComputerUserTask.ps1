@@ -23,29 +23,24 @@ if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11"))
 ####################################################################################################
 # Install Microsoft Teams for the current user
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
-
 $registryPathUser = "HKCU:\Software\Wilmorite\DCIM"
 $registryItemUser = "TeamsInstalled"
 
 # Check if Teams is already installed for the current user
 if (-not (Test-Path -Path $registryPathUser) -or ((Get-Item -LiteralPath $registryPathUser).GetValue($registryItemUser, 0)) -eq 0) {
+    Start-Transcript -Path $ENV:tmp\DCIM-Teams.log -Force
     $ret = RunWebScript -url "https://raw.githubusercontent.com/cello1500/dcim-external/main/Install-MSTeams-User.ps1"
+    Stop-Transcript
 }
-
-Stop-Transcript
 
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
-Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
-
-"This is Winget"
-
 $registryPath = "HKCU:\Software\Wilmorite\DCIM"
 $registryItem = "WingetUpdate"
 
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -lt (Get-Date).ToString('yyyyMMdd')) {
+    Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
     if (-not (Test-Path -Path $registryPath)) {
         New-Item -Path $registryPath -Force | Out-Null
     }
@@ -59,8 +54,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     } else {
         $ret = 15
     }
+    Stop-Transcript
 }
-
-Stop-Transcript
 
 return $ret
