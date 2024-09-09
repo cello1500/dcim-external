@@ -290,25 +290,17 @@ $v = $v | Add-Member -Name "Win32_Service" -Value $i -MemberType NoteProperty -P
 # Collect installed software information from registry
 $hklm32 = Get-ItemProperty -Path HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* |
     ForEach-Object {
-        Add-Member -InputObject $_ -Name "Architecture" -Value "HKLM32" -MemberType NoteProperty -PassThru
-        if ([bool]($_.PSObject.Properties.name -match 'InstallDate')) {
-            $_.InstallDate = if (Test-IsInteger($_.InstallDate)) {
-                (Get-Date 01.01.1970).AddSeconds($_.InstallDate).ToString("yyyy-MM-dd HH:mm")
-            } else {
-                $_.InstallDate
-            }
+        if (Test-IsInteger($_.InstallDate)) {
+            $_.InstallDate = (Get-Date 01.01.1970).AddSeconds($_.InstallDate).ToString("yyyy-MM-dd HH:mm")
         }
+        Add-Member -InputObject $_ -Name "Architecture" -Value "HKLM32" -MemberType NoteProperty -PassThru
     } | Select-Object DisplayName, Publisher, InstallDate, InstallSource, UninstallString, DisplayVersion, URLInfoAbout, Architecture
 $hklm64 = Get-ItemProperty -Path HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* |
     ForEach-Object {
-        Add-Member -InputObject $_ -Name "Architecture" -Value "HKLM64" -MemberType NoteProperty -PassThru
-        if ([bool]($_.PSObject.Properties.name -match 'InstallDate')) {
-            $_.InstallDate = if (Test-IsInteger($_.InstallDate)) {
-                (Get-Date 01.01.1970).AddSeconds($_.InstallDate).ToString("yyyy-MM-dd HH:mm")
-            } else {
-                $_.InstallDate
-            }
+        if (Test-IsInteger($_.InstallDate)) {
+            $_.InstallDate = (Get-Date 01.01.1970).AddSeconds($_.InstallDate).ToString("yyyy-MM-dd HH:mm")
         }
+        Add-Member -InputObject $_ -Name "Architecture" -Value "HKLM64" -MemberType NoteProperty -PassThru
     } | Select-Object DisplayName, Publisher, InstallDate, InstallSource, UninstallString, DisplayVersion, URLInfoAbout, Architecture
 #$hkcu = Get-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, Publisher, InstallDate, InstallSource, UninstallString, DisplayVersion, URLInfoAbout
 $hkcu = Get-ChildItem -Path registry::HKEY_USERS\ |
