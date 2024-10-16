@@ -348,7 +348,7 @@ $UserProperty = @{n="User";e={[string](New-Object System.Security.Principal.Secu
 $UserSid = @{n="usersid";e={[string]$_.Properties[1].Value}}
 $TypeProperty = @{n="Action";e={if($_.ID -eq 7001) {"Logon"} else {"Logoff"}}}
 $TimeProperty = @{n="Time";e={$_.TimeCreated}}
-[array]$i = Get-WinEvent -FilterHashtable @{LogName = "System"; ProviderName = "Microsoft-Windows-Winlogon"; Id = 7001, 7002; }  -ErrorAction SilentlyContinue | Select-Object $usersid, $UserProperty, $TypeProperty, $TimeProperty, RecordId
+[array]$i = Get-WinEvent -FilterHashtable @{LogName = "System"; ProviderName = "Microsoft-Windows-Winlogon"; Id = 7001, 7002; }  -ErrorAction SilentlyContinue | Select-Object $UserSid, $UserProperty, $TypeProperty, $TimeProperty, RecordId
 $i | ForEach-Object { $_.Time = $_.Time.ToString("yyyy-MM-dd HH:mm:ss") }
 
 $v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -PassThru
