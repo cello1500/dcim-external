@@ -397,7 +397,7 @@ $v = $v | Add-Member -Name "Custom" -Value $i[0] -MemberType NoteProperty -PassT
 $i = Get-WinEvent -FilterHashtable @{LogName = "System"; Id = 1074, 6005, 6006, 6008; } -ErrorAction SilentlyContinue |
     Select-Object ID, RecordID, ProviderName, LogName,
     @{Name="Username";Expression={[string]([System.Security.Principal.SecurityIdentifier]$_.userid).Translate( [System.Security.Principal.NTAccount])}},
-    @{Name="UserSdid";Expression={[string]$_.userid}},
+    @{Name="UserSid";Expression={[string]$_.userid}},
     TimeCreated, ContainerLog, LevelDisplayName, Message
 $v = $v | Add-Member -Name "WinEventBootShutdown" -Value $i -MemberType NoteProperty -PassThru
 # $i = Get-WinEvent -ProviderName Microsoft-Windows-Kernel-General | Where-Object { $_.id -eq 12 -OR $_.id -eq 13} | Select-Object TimeCreated, Id, Message
