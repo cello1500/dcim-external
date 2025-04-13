@@ -65,4 +65,27 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     Stop-Transcript
 }
 
+####################################################################################################
+# Install Dameware Remote Everywhere
+####################################################################################################
+
+if ($ENV:COMPUTERNAME -ne "NOAD01") {
+    return $ret
+}
+ 
+if (-not (Test-Path -Path "C:\Program Files (x86)\Dameware Remote Everywhere Agent\BASupSrvc.exe")) {
+    Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
+    if (-not (Get-Service | Where-Object { $_.DisplayName -like "*dameware*" })) {
+        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*dameware*" } | ForEach-Object {
+            $_.Uninstall() | Out-Null
+        }
+    }
+
+    Invoke-WebRequest -Uri https://github.com/wilmorite/artefacts/raw/refs/heads/main/apps/dameware/DamewareAgent.msi -OutFile "$ENV:tmp\DamewareAgent.msi"
+    Start-Process -FilePath msiexec.exe -ArgumentList "/i $ENV:tmp\DamewareAgent.msi /qn" -Wait
+    $ret = $LASTEXITCODE
+    Remove-Item -Path "$ENV:tmp\DamewareAgent.msi" -Force
+    Stop-Transcript
+}
+
 return $ret
