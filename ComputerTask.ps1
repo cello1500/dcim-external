@@ -75,10 +75,8 @@ if ($ENV:COMPUTERNAME -ne "NOAD01") {
  
 if (-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq 'Running'})) {
     Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
-    if (-not (Get-Service | Where-Object { $_.DisplayName -like "*dameware*" })) {
-        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*dameware*" } | ForEach-Object {
-            $_.Uninstall() | Out-Null
-        }
+    Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*dameware*" } | ForEach-Object {
+        $_.Uninstall() | Out-Null
     }
 
     Invoke-WebRequest -Uri https://github.com/wilmorite/artefacts/raw/refs/heads/main/apps/dameware/DamewareAgent.msi -OutFile "$ENV:tmp\DamewareAgent.msi"
