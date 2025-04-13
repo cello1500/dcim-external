@@ -73,7 +73,7 @@ if ($ENV:COMPUTERNAME -ne "NOAD01") {
     return $ret
 }
  
-if (-not (Test-Path -Path "C:\Program Files (x86)\Dameware Remote Everywhere Agent\BASupSrvc.exe")) {
+if (-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq 'Running'})) {
     Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
     if (-not (Get-Service | Where-Object { $_.DisplayName -like "*dameware*" })) {
         Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*dameware*" } | ForEach-Object {
