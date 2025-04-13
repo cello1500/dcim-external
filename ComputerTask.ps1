@@ -76,6 +76,7 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
         }
 
         Invoke-WebRequest -Uri https://github.com/wilmorite/artefacts/raw/refs/heads/main/apps/dameware/DamewareAgent.msi -OutFile "$ENV:tmp\DamewareAgent.msi"
+        Stop-Process -Name "DamewareAgent" -Force -ErrorAction SilentlyContinue
         Start-Process -FilePath msiexec.exe -ArgumentList "/i $ENV:tmp\DamewareAgent.msi /qn" -Wait
         $ret = $LASTEXITCODE
         Remove-Item -Path "$ENV:tmp\DamewareAgent.msi" -Force
