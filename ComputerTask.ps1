@@ -69,6 +69,10 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
 # Install Dameware Remote Everywhere
 ####################################################################################################
 if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
+    if ((Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
+        Start-Service -Name "mamae" -ErrorAction SilentlyContinue
+    }
+
     if (-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq 'Running'}) -and
     ((Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime).TotalMinutes -gt 10) {
         Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
