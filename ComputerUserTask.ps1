@@ -46,7 +46,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     }
     Set-ItemProperty -Path $registryPath -Name $registryItem -Type String -Value "00000000" -ErrorAction SilentlyContinue | Out-Null
     
-    $out = winget upgrade --all --scope user --accept-package-agreements --accept-source-agreements
+    $out = winget upgrade --all --silent --scope user --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
     if ($?) {

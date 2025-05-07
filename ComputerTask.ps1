@@ -33,7 +33,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
     #create the sysget alias so winget can be ran as system
     new-alias -Name sysget -Value "$wingetpath\winget.exe" -Force
     
-    $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements
+    $out = sysget upgrade --all --silent --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
     if (-not (Test-Path -Path $registryPath)) {
