@@ -89,4 +89,15 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
     }
 }
 
+####################################################################################################
+# Remove Shutdown, Sleep and Hybernate options from the Start Menu on conference computers
+####################################################################################################
+
+# Check if the computer name ends with "conf" or "conference"
+if ($env:COMPUTERNAME -like "*conf" -or $env:COMPUTERNAME -like "*conference") {
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Start\HideShutDown" -Name "value" -Value 1 -Type DWord
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Start\HideHibernate" -Name "value" -Value 1 -Type DWord
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Start\HideSleep" -Name "value" -Value 1 -Type DWord
+}
+
 return $ret
