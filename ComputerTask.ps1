@@ -20,12 +20,9 @@ if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11"))
 
 $ret = 0
 
-$wingetexe = Resolve-Path "C:\Program Files\WindowsApps\Microsoft.DesktopAppInstaller_*_x64__8wekyb3d8bbwe\winget.exe"
-    if ($wingetexe){
-           $SystemContext = $wingetexe[-1].Path
-    }
+$wingetpath = Get-ChildItem -Path "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*" -Filter "winget.exe" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty DirectoryName
 #create the sysget alias so winget can be ran as system
-new-alias -Name sysget -Value "$systemcontext"
+new-alias -Name sysget -Value "$wingetpath\winget.exe" -Force
 
 ####################################################################################################
 # Run winget update command once a day
