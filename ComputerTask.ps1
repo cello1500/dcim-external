@@ -20,10 +20,6 @@ if (-not ((Get-WmiObject Win32_OperatingSystem).Caption).Contains("Windows 11"))
 
 $ret = 0
 
-$wingetpath = Get-ChildItem -Path "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*" -Filter "winget.exe" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty DirectoryName
-#create the sysget alias so winget can be ran as system
-new-alias -Name sysget -Value "$wingetpath\winget.exe" -Force
-
 ####################################################################################################
 # Run winget update command once a day
 ####################################################################################################
@@ -33,6 +29,10 @@ $registryItem = "WingetUpdate"
 if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPath).GetValue($registryItem, "00000000")) -lt (Get-Date).ToString('yyyyMMdd')) {
     Start-Transcript -Path $ENV:tmp\DCIM-Winget.log -Force
 
+    $wingetpath = Get-ChildItem -Path "$env:ProgramFiles\WindowsApps\Microsoft.DesktopAppInstaller_*" -Filter "winget.exe" -Recurse | Sort-Object LastWriteTime -Descending | Select-Object -First 1 -ExpandProperty DirectoryName
+    #create the sysget alias so winget can be ran as system
+    new-alias -Name sysget -Value "$wingetpath\winget.exe" -Force
+    
     $out = sysget upgrade --all --accept-package-agreements --accept-source-agreements
     "Winget upgrade output: $out"
 
