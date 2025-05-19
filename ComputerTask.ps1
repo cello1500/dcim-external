@@ -97,4 +97,13 @@ if ($env:COMPUTERNAME -like "*conf" -or $env:COMPUTERNAME -like "*conference") {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\PolicyManager\default\Start\HideSleep" -Name "value" -Value 1 -Type DWord
 }
 
+
+####################################################################################################
+# Miscelaneous Registry Settings
+####################################################################################################
+if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
+    # Hide the messages to sync Consumer OneDrive files
+    Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive" -Name "DisableNewAccountDetection" -Value 1 -Type DWord
+}
+
 return $ret
