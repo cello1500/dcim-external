@@ -106,4 +106,14 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
     Set-ItemProperty -Path "HKLM:\SOFTWARE\Policies\Microsoft\OneDrive" -Name "DisableNewAccountDetection" -Value 1 -Type DWord
 }
 
+####################################################################################################
+# Uninstall Teamviewer
+####################################################################################################
+
+if ($ENV:COMPUTERNAME -like "AUTO-96CN704*") {
+    Start-Transcript -Path $ENV:tmp\DCIM-Teamviewer.log -Force
+    Get-Package -AllVersions -Force | Where-Object { $_.Name -match "Teamviewer Host|Teamviewr monitoring|Teamviewer Patch" } | ForEach-Object { sysget uninstall --silent --accept-source-agreements --accept-package-agreements "$_.Name" }
+    Stop-Transcript
+}
+
 return $ret
