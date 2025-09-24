@@ -110,7 +110,7 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
 # Uninstall Teamviewer
 ####################################################################################################
 
-if ($ENV:COMPUTERNAME -eq "AUTO-96CN704") {
+if ($ENV:COMPUTERNAME -eq "WMG-ORANGECONF") {
     Start-Transcript -Path $ENV:tmp\DCIM-Teamviewer.log -Force
     Get-Package -AllVersions -Force | Where-Object { $_.Name -match "Teamviewer Host|Teamviewr monitoring|Teamviewer Patch" } | ForEach-Object { sysget uninstall --silent --accept-source-agreements --accept-package-agreements "$_.Name" }
     Stop-Transcript
