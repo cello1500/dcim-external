@@ -112,7 +112,9 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
 
 if ($ENV:COMPUTERNAME -eq "WMG-ORANGECONF") {
     Start-Transcript -Path $ENV:tmp\DCIM-Teamviewer.log -Force
+    "Uninstalling Teamviewer components..."
     Get-Package -AllVersions -Force | Where-Object { $_.Name -match "Teamviewer Host|Teamviewr monitoring|Teamviewer Patch" } | ForEach-Object { $_.Name; sysget uninstall --accept-source-agreements --accept-package-agreements "$_.Name" }
+    "What is left..."
     Stop-Transcript
 }
 
