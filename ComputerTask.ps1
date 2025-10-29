@@ -77,6 +77,7 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)" -AND ($ENV:COMPUTERNAME -eq "
         Invoke-WebRequest -Uri https://api.us3.swi-rc.com/download/getpcinstall.php?iid=34882-16e970c2b7d6f-us3-vLBbYYdySOTtMXBXwOAThXyx-a-25 -OutFile "$ENV:tmp\DamewareAgent.exe"
         Stop-Service "Dameware Remote Everywhere" -ErrorAction SilentlyContinue
         Stop-Process -Name "BASup*" -Force -ErrorAction SilentlyContinue
+        Stop-Process -Name "msiexec" -Force -ErrorAction SilentlyContinue
         $dreInstallPath = "C:\Program Files (x86)\Dameware Remote Everywhere Agent"
         $uninstallExe = "$dreInstallPath\uninstall.exe"
 
