@@ -70,7 +70,7 @@ if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)" -AND $ENV:COMPUTERNAME -eq "W
         Start-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue
     }
 
-    if ((-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -eq 'Running') -and
+    if (((Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -ne 'Running') -and
     ((Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime).TotalMinutes -gt 10) {
         Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
         $ProgressPreference = 'SilentlyContinue'
