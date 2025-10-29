@@ -65,23 +65,42 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
 ####################################################################################################
 # Install Dameware Remote Everywhere
 ####################################################################################################
-if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
+if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)" -AND $ENV:COMPUTERNAME -eq "WMG-DONK") {
     if ((Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
-        Start-Service -Name "mamae" -ErrorAction SilentlyContinue
+        Start-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue
     }
 
-    if (-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue | Where-Object {$_.Status -eq 'Running'}) -and
+    if ((-not (Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -eq 'Running') -and
     ((Get-Date) - (gcim Win32_OperatingSystem).LastBootUpTime).TotalMinutes -gt 10) {
         Start-Transcript -Path $ENV:tmp\DCIM-Dameware.log -Force
-        Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "*dameware*" } | ForEach-Object {
-            $_.Uninstall() | Out-Null
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest -Uri https://api.us3.swi-rc.com/download/getpcinstall.php?iid=34882-16e970c2b7d6f-us3-vLBbYYdySOTtMXBXwOAThXyx-a-25 -OutFile "$ENV:tmp\DamewareAgent.exe"
+        Stop-Service "Dameware Remote Everywhere" -ErrorAction SilentlyContinue
+        Stop-Process -Name "BASup*" -Force -ErrorAction SilentlyContinue
+        $dreInstallPath = "C:\Program Files (x86)\Dameware Remote Everywhere Agent"
+        $uninstallExe = "$dreInstallPath\uninstall.exe"
+
+        # Check if the uninstaller exists before proceeding
+        if (Test-Path -Path $uninstallExe) {
+            # Execute the uninstaller silently
+            Start-Process -FilePath $uninstallExe -ArgumentList "/S" -Wait
+            Write-Host "Dameware Remote Everywhere agent has been uninstalled."
+        } else {
+            Write-Host "Dameware Remote Everywhere agent uninstaller not found at $dreInstallPath."
         }
 
-        Invoke-WebRequest -Uri https://github.com/wilmorite/artefacts/raw/refs/heads/main/apps/dameware/DamewareAgent.msi -OutFile "$ENV:tmp\DamewareAgent.msi"
-        Stop-Process -Name "DamewareAgent" -Force -ErrorAction SilentlyContinue
-        Start-Process -FilePath msiexec.exe -ArgumentList "/i $ENV:tmp\DamewareAgent.msi /qn" -Wait
-        $ret = $LASTEXITCODE
-        Remove-Item -Path "$ENV:tmp\DamewareAgent.msi" -Force
+        $timeoutSeconds = 240  # 4 minutes
+        $proc = Start-Process -FilePath $ENV:tmp\DamewareAgent.exe -ArgumentList "/S /R" -PassThru
+        if (Wait-Process -Id $proc.Id -Timeout $timeoutSeconds -ErrorAction SilentlyContinue) {
+            Write-Host "Dameware Agent installation completed within timeout."
+        } else {
+            Write-Warning "Installation exceeded $($timeoutSeconds / 60) minutes. Terminating msiexec.exe..."
+            Stop-Process -Id $proc.Id -Force
+        }
+
+        Write-Host "Installation exit code: $($proc.ExitCode)"
+
+        Remove-Item -Path "$ENV:tmp\DamewareAgent.exe" -Force
         Stop-Transcript
     }
 }
