@@ -65,7 +65,7 @@ if (-not (Test-Path -Path $registryPath) -or ((Get-Item -LiteralPath $registryPa
 ####################################################################################################
 # Install Dameware Remote Everywhere
 ####################################################################################################
-if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)" -AND ($ENV:COMPUTERNAME -eq "WMG-DONK" -OR $ENV:COMPUTERNAME -eq "AUTO-96CN704")) {
+if ($ENV:COMPUTERNAME -notmatch "^(WIL|ADM|CELLO)") {
     if ((Get-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue).Status -eq 'Stopped') {
         Start-Service -Name "Dameware Remote Everywhere" -ErrorAction SilentlyContinue
     }
