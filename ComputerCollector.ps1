@@ -481,7 +481,7 @@ $v = $v | Add-Member -Name "TaskScheduler" -Value $tasks -MemberType NotePropert
 Stop-Transcript
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
-#Remove-Item -Path $ENV:tmp\ComputerCollector.log
+Remove-Item -Path $ENV:tmp\ComputerCollector.log
 
 $Output = foreach ($line in $Output) {
     if (-not $line.contains("TerminatingError(New-Object):") -and -not $line.contains("Parameter name: sddlForm") -and -not $line.contains("CommandInvocation(Out-Null):")) {
@@ -502,8 +502,6 @@ $apiUrl = $ApiURL
 $jsonData = ConvertTo-Json $v -Depth 4 -Compress
 
 # Send the REST API request
-"Aqui vai URL " + $PostResultURL
-"Aqui vai Headears " + $headers
 $response = Invoke-RestMethod -Uri $PostResultURL -Method POST -Headers $headers -Body $jsonData -TimeoutSec 5
 
 # Display the response
