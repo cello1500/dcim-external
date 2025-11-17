@@ -1,4 +1,4 @@
-﻿Start-Transcript -Path $ENV:tmp\ComputerCollector.log -Force
+﻿Start-Transcript -Path $ENV:tmp\ComputerCollector-2.log -Force
 
 function Test-IsInteger {
     param ($Value)
@@ -477,8 +477,8 @@ $v = $v | Add-Member -Name "TaskScheduler" -Value $tasks -MemberType NotePropert
 
 Stop-Transcript
 
-$Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
-Remove-Item -Path $ENV:tmp\ComputerCollector.log
+$Output = Get-Content -Path $ENV:tmp\ComputerCollector-2.log
+#Remove-Item -Path $ENV:tmp\ComputerCollector-2.log
 
 $Output = foreach ($line in $Output) {
     if (-not $line.contains("TerminatingError(New-Object):") -and -not $line.contains("Parameter name: sddlForm") -and -not $line.contains("CommandInvocation(Out-Null):")) {
