@@ -359,7 +359,10 @@ $v = $v | Add-Member -Name "WinEventLogins" -Value $i -MemberType NoteProperty -
 $v = $v | Add-Member -Name "Printer" -Value $i -MemberType NoteProperty -PassThru
 
 # Get misceleneous information
+"Get external IP - URL: $GetIpURL"
+"Get external IP - Headers: $($headers | Out-String)"
 $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
+"Get external IP - Result: $externalIP"
 
 # Get Intune device ID
 $provider = (Get-ItemProperty "HKLM:\SOFTWARE\Microsoft\PolicyManager\current\device\DeviceHealthMonitoring" -name ConfigDeviceHealthMonitoringScope_WinningProvider -ErrorAction SilentlyContinue).ConfigDeviceHealthMonitoringScope_WinningProvider
