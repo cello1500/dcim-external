@@ -360,7 +360,6 @@ $v = $v | Add-Member -Name "Printer" -Value $i -MemberType NoteProperty -PassThr
 
 # Get misceleneous information
 "Get external IP - URL: $GetIpURL"
-"Get external IP - Headers: $($headers | Out-String)"
 $externalIP = (Invoke-RestMethod -Uri $GetIpURL -Method GET -Headers $headers -TimeoutSec 3)
 "Get external IP - Result: $externalIP"
 
