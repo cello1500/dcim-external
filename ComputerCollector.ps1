@@ -479,9 +479,10 @@ $tasks = (schtasks.exe /query /V /FO CSV) | ConvertFrom-Csv | Where-Object { $_.
 $v = $v | Add-Member -Name "TaskScheduler" -Value $tasks -MemberType NoteProperty -PassThru
 
 Stop-Transcript
+Start-Transcript -Path $ENV:tmp\ComputerCollector-submission.log -Force
 
 $Output = Get-Content -Path $ENV:tmp\ComputerCollector.log
-Remove-Item -Path $ENV:tmp\ComputerCollector.log
+#Remove-Item -Path $ENV:tmp\ComputerCollector.log
 
 $Output = foreach ($line in $Output) {
     if (-not $line.contains("TerminatingError(New-Object):") -and -not $line.contains("Parameter name: sddlForm") -and -not $line.contains("CommandInvocation(Out-Null):")) {
@@ -506,6 +507,8 @@ $response = Invoke-RestMethod -Uri $PostResultURL -Method POST -Headers $headers
 
 # Display the response
 $response
+
+Stop-Transcript
 
 ## return register item property value for all users on the computer
 # Get-ChildItem -Path HKU:\ | ForEach-Object {Get-ItemProperty -Path Registry::$_\Software\Microsoft\Windows\CurrentVersion\Run -Name *}
