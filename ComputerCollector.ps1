@@ -372,8 +372,8 @@ $intuneID = (Get-ItemProperty ("HKLM:\SOFTWARE\Microsoft\Enrollments\" + $provid
 
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
-$AzureAdJoined = ($status -match "AzureAdJoined").Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
-$DomainJoined = ($status -match "DomainJoined").Split(":")[-1].Trim(); if ($DomainJoined -eq "YES") {$DomainJoined = $true} else {$DomainJoined = $false}
+$AzureAdJoined = ($status -match "AzureAdJoined")[0].Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
+$DomainJoined = ($status -match "DomainJoined")[0].Split(":")[-1].Trim(); if ($DomainJoined -eq "YES") {$DomainJoined = $true} else {$DomainJoined = $false}
 # Collect routing information
 $route = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix "0.0.0.0/0"
 
