@@ -372,8 +372,8 @@ $intuneID = (Get-ItemProperty ("HKLM:\SOFTWARE\Microsoft\Enrollments\" + $provid
 
 # Collect Azure AD Join information
 $status = (cmd /c dsregcmd /status)
-$AzureAdJoined = ($status -match "AzureAdJoined")[0].Split(":")[-1].Trim(); if ($AzureAdJoined -eq "YES") {$AzureAdJoined = $true} else {$AzureAdJoined = $false}
-$DomainJoined = ($status -match "DomainJoined")[0].Split(":")[-1].Trim(); if ($DomainJoined -eq "YES") {$DomainJoined = $true} else {$DomainJoined = $false}
+$AzureAdJoined = (($status -match "AzureAdJoined") | Select-Object -First 1 | ForEach-Object { $_.Split(":")[-1].Trim() }) -eq "YES"
+$DomainJoined = (($status -match "DomainJoined") | Select-Object -First 1 | ForEach-Object { $_.Split(":")[-1].Trim() }) -eq "YES"
 # Collect routing information
 $route = Get-NetRoute -AddressFamily IPv4 -DestinationPrefix "0.0.0.0/0"
 
@@ -386,9 +386,9 @@ $i = $i | Add-Member -Name "SecureBootUefi" -Value (Confirm-SecureBootUEFI -Erro
 $i = $i | Add-Member -Name "IntuneDeviceId" -Value $intuneID -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "AzureAdJoined" -Value $AzureAdJoined -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DomainJoined" -Value $DomainJoined -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureDeviceId" -Value ($status -match "DeviceId")[0].Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureTenantId" -Value ($status -match "TenantId")[0].Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
-$i = $i | Add-Member -Name "AzureTenantName" -Value ($status -match "TenantName")[0].Split(":")[-1].Trim() -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureDeviceId" -Value (($status -match "DeviceId") | Select-Object -First 1 | ForEach-Object { $_.Split(":")[-1].Trim() }) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantId" -Value (($status -match "TenantId") | Select-Object -First 1 | ForEach-Object { $_.Split(":")[-1].Trim() }) -MemberType NoteProperty -PassThru
+$i = $i | Add-Member -Name "AzureTenantName" -Value (($status -match "TenantName") | Select-Object -First 1 | ForEach-Object { $_.Split(":")[-1].Trim() }) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGateway" -Value @($route.NextHop) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceIndex" -Value @($route.InterfaceIndex) -MemberType NoteProperty -PassThru
 $i = $i | Add-Member -Name "DefaulGatewayInterfaceAlias" -Value @($route.InterfaceAlias) -MemberType NoteProperty -PassThru
